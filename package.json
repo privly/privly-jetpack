@@ -1,0 +1,13 @@
+{
+  "name": "privly",
+  "title": "Privly",
+  "id": "jid1-eFFM5gBRoFdotQ",
+  "description": "Privly enables you to post and read private content through any website. Only the people you designate can read your content, and the host page never has access. This extension is still experimental. For more information on Privly development, go to http://www.privly.org",
+  "author": "Sean McGregor, Hitesh Sharma",
+  "license": "OSI - MIT License",
+  "version": "0.5.0",
+  "permissions": {
+    "cross-domain-content": ["chrome://privly/content/privly-applications/PlainPost/show.html",
+                             "chrome://privly/content/privly-applications/Message/show.html"]
+  }
+}
