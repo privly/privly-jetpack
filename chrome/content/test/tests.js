@@ -13,7 +13,31 @@ const { ls } = PrivlyXPCOM.getLocalStorageShim();
 const { storage } = PrivlyXPCOM.getSimpleStorage();
 const { version, loadReason } = PrivlyXPCOM.getSelfObject();
 const tabs = PrivlyXPCOM.getTabs();
+const windows = PrivlyXPCOM.getWindows();
+// Console access to Terminal Reporter
+this.console = Components.utils.
+                 import("resource://gre/modules/devtools/Console.jsm", {}).
+                 console;
 
+(function() {
+  var jasmineEnv = jasmine.getEnv();
+  jasmineEnv.updateInterval = 2500;
+  var terminalReporter = new jasmineReporters.TerminalReporter({
+                               verbosity: 3,
+                               color: "green",
+                             });
+  var old_callback = terminalReporter.jasmineDone;
+  terminalReporter.jasmineDone = function() {
+    old_callback();
+    // Close the browser on completing tests.
+    windows.browserWindows.activeWindow.close();
+  };
+  jasmineEnv.addReporter(terminalReporter);
+})();
+
+/**
+ * Extension Tests
+ */
 describe("First Run Suite", function() {
   
   it("tests privly version", function() {
@@ -26,7 +50,7 @@ describe("First Run Suite", function() {
     expect(loadReason).toBe("install");
     var flag = false;
     var len = tabs.length;
-    for (i = 0; i < len; i++) {
+    for (var i = 0; i < len; i++) {
       if (tabs[i].url === "chrome://privly/content/privly-applications/Pages/ChromeFirstRun.html") {
         flag = true;
       }
@@ -37,35 +61,25 @@ describe("First Run Suite", function() {
 });
 
 describe("Local Storage Shim Suite", function() {
- 
+
   it("tests simple-storage presence", function() {
     expect(ls.localStorageDefined).toBe(false);
   });
 
-  it("tests ls.setItem", function() {
+  it("tests ls.setItem, ls.removeItem", function() {
     ls.setItem("test", "foobar");
     expect(storage.test).toBe("foobar");
+    // cleanup
+    ls.removeItem("test");
+    expect(storage.test).toBeUndefined();
   });
 
-  it("tests ls.getItem", function() {
-    storage["test2"] = "foobar2";
-    expect(ls.getItem("test2")).toBe("foobar2");
-  });
-
-  it("tests ls.removeItem", function() {
-    storage["test3"] = "foobar3";
-    expect(ls.getItem("test3")).toBe("foobar3");
-    ls.removeItem("test3");
-    expect(storage["test3"]).toBeUndefined();
-    expect(ls.getItem("test3")).toBeUndefined();
+  it("tests ls.getItem, ls.removeItem", function() {
+    storage["test"] = "foobar";
+    expect(ls.getItem("test")).toBe("foobar");
+    // cleanup
+    ls.removeItem("test");
+    expect(storage.test).toBeUndefined();
   });
 
 });
-
-(function() {
-  var jasmineEnv = jasmine.getEnv();
-  jasmineEnv.updateInterval = 2500;
-  var consoleReporter = new jasmine.ConsoleReporter();
-  jasmineEnv.addReporter(consoleReporter);
-  jasmineEnv.execute();
-})();
