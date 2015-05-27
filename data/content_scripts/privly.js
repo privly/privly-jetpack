@@ -40,6 +40,30 @@ DEALINGS IN THE SOFTWARE.
 var privly = {
 
   /**
+   * Platform this script is running in
+   */
+  platform: "",
+
+  /**
+   * Sets and returns the platform
+   */
+  setPlatformName: function() {
+    if (typeof chrome !== "undefined") {
+      if (typeof chrome.extension !== "undefined") {
+        if (typeof chrome.extension.sendMessage !== "undefined") {
+          this.platform = "CHROME";
+        }
+      }
+    }
+    if (typeof self !== "undefined") {
+      if (typeof self.port !== "undefined") {
+        this.platform = "FIREFOX";
+      }
+    }
+    return this.platform;
+  },
+
+  /**
    * Gives a map of the URL parameters and the anchor.
    * This method assumes the parameters and the anchor are encoded
    * with encodeURIcomponent. Parameters present in both the anchor text
@@ -372,7 +396,6 @@ var privly = {
       "overflow":"hidden",
       "data-privly-display":"true",
       "data-privly-accept-resize":"true", //Indicates this iframe is resize eligible
-      "src":applicationUrl,
       "id":"ifrm" + id, //The id and the name are the same so that the iframe can be
       "name":"ifrm" + id //uniquely identified and resized
        };
@@ -390,6 +413,38 @@ var privly = {
       object.setAttribute("data-privly-display", "false");
     }
     object.style.display = "none";
+
+    // Set the source URL
+    if (this.platform == "CHROME") { 
+      iFrame.setAttribute("src", applicationUrl);
+    }
+
+    if (this.platform == "FIREFOX") {
+      // The url to give to the injectable application
+      var url = applicationUrl;
+
+      // Get the sham iframe's document in the host page
+      var frameDoc = iFrame.contentDocument.defaultView;
+      // The local location of the selected Privly App
+      var path;
+
+      // Deprecated app specification parameter
+      var pattern = /privlyInjectableApplication\=/i;
+      url = url.replace(pattern, "privlyApp=");
+
+      if( url.indexOf("privlyApp=Message") > 0 ) {
+        path = "chrome://privly/content/privly-applications/Message/show.html?privlyOriginalURL=";
+      } else if( url.indexOf("privlyApp=ZeroBin") > 0) {
+        path = "chrome://privly/content/privly-applications/Message/show.html?privlyOriginalURL="; // Deprecated
+      } else if( url.indexOf("privlyApp=PlainPost") > 0) {
+        path = "chrome://privly/content/privly-applications/PlainPost/show.html?privlyOriginalURL=";
+      } else if( url.indexOf("https://priv.ly") === 0 ) {
+        path = "chrome://privly/content/privly-applications/PlainPost/show.html?privlyOriginalURL="; // Deprecated
+      } else {
+        return;
+      }
+      frameDoc.location.href = path + encodeURIComponent(url);
+    }
 
     //put the iframe into the page
     object.parentNode.insertBefore(iFrame, object);
@@ -413,27 +468,29 @@ var privly = {
 
     // Only the Chrome extension currently supports local code storage.
     // other extensions will default to remote code execution.
-    if (chrome !== undefined && chrome.extension !== undefined &&
-      chrome.extension.sendMessage !== undefined) {
-        chrome.extension.sendMessage(
-          {privlyOriginalURL: iframeUrl},
-          function(response) {
-            if( typeof response.privlyApplicationURL === "string" ) {
-              privly.injectLinkApplication(object, response.privlyApplicationURL, frameId);
-            }
-          });
-      } else {
-        if (iframeUrl.indexOf("?") > 0){
-          iframeUrl = iframeUrl.replace("?","?format=iframe&frame_id=" +
-            frameId + "&");
-        }
-        else if (iframeUrl.indexOf("#") > 0)
-        {
-          iframeUrl = iframeUrl.replace("#","?format=iframe&frame_id=" +
-            frameId + "#");
-        }
-        privly.injectLinkApplication(object, iframeUrl, frameId);
+    if (this.platform === "CHROME") {
+      chrome.extension.sendMessage(
+        {privlyOriginalURL: iframeUrl},
+        function(response) {
+          if( typeof response.privlyApplicationURL === "string" ) {
+            privly.injectLinkApplication(object, response.privlyApplicationURL, frameId);
+          }
+        });
+    } 
+    else if (this.platform === "FIREFOX") {
+      privly.injectLinkApplication(object, iframeUrl, frameId);
+    } else {
+      if (iframeUrl.indexOf("?") > 0){
+        iframeUrl = iframeUrl.replace("?","?format=iframe&frame_id=" +
+          frameId + "&");
       }
+      else if (iframeUrl.indexOf("#") > 0)
+      {
+        iframeUrl = iframeUrl.replace("#","?format=iframe&frame_id=" +
+          frameId + "#");
+      }
+      privly.injectLinkApplication(object, iframeUrl, frameId);
+    }
   },
 
   /**
@@ -571,6 +628,10 @@ var privly = {
     if (typeof(message.origin) !== "string" ||
         typeof(message.data) !== "string" ||
         message.data.indexOf(',') < 1) {
+      return;
+    }
+    
+    if (this.platform === "FIREFOX") {
       return;
     }
 
@@ -890,17 +951,30 @@ var privly = {
   }
 };
 
+const platform = privly.setPlatformName();
+
 /*
  * In order to launch the content script loaded in each iframe of the page
  * (especially the dynamically generated ones) it is needed to tell the
  * background script (reading_process.js) via a message  the current operating
  * mode. If it receives confirmation, then privly.start() is called.
  */
-if (chrome !== undefined && chrome.extension !== undefined &&
-      chrome.extension.sendMessage !== undefined && !privly.started) {
+if (platform === "CHROME") {
   chrome.runtime.sendMessage({ask: "shouldStartPrivly?"}, function(response) {
     if(response.tell === "yes") {
       privly.start();
     }
   });
+}
+
+if (platform == "FIREFOX") {
+  self.port.on("confirmStart", function(message) {
+    var confirmMessage = JSON.parse(message);
+    console.log("Confirming!");
+    if (confirmMessage["start"] === "yes") {
+      console.log("Start!");
+      privly.start();
+    }
+  });
+  self.port.emit("startPrivly?", "startPrivly?");
 }

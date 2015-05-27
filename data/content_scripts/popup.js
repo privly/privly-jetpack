@@ -16,4 +16,4 @@ window.addEventListener("click", function(event) {
   if (target.nodeName === "A") {
     self.port.emit("hyperlink", target.id);
   }
-});
+}, false);
