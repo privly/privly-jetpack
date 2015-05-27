@@ -1,0 +1,70 @@
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lobster'), local('Lobster-Regular'), url(fonts/lobster.woff2) format('woff2'), url(fonts/lobster.woff) format('woff');
+}
+body {
+  background-color: #eee;
+}
+li {
+  line-height: 18px;
+}
+#privly-heading {
+  background-color: #252525;
+}
+.panel-heading a:hover {
+  background-color: #eee;
+}
+.panel {
+  border: none;
+  box-shadow: none;
+}
+.panel-body {
+  background-color: #eee;
+}
+.panel-heading h1,h2,h3 {
+  font-family: 'Lobster', cursive;
+  color: #F3EBD9;
+  text-align: center;
+}
+
+.popup-menu {
+  display: block;
+  font-size: 15px;
+  min-width: 170px;
+  padding: 3px 0;
+  margin: 0;
+  list-style: none;
+  background-color: #ffffff;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.popup-menu .divider {
+  background-color: #E4E4E6;
+  border-bottom: 1px solid #FFF;
+  height: 2px;
+  margin: 5px 1px;
+  overflow: hidden;
+}
+
+.popup-menu a {
+  display: block;
+  color: #333333;
+  text-decoration: none;
+  padding: 3px 15px;
+  font-weight: normal;
+  line-height: 18px;
+}
+
+.popup-menu .active > a,
+.popup-menu li > a:hover,
+.popup-menu .active > a:hover {
+  background-color: #0088cc;
+  color: #ffffff;
+}
+.popup-menu span {
+  cursor: default;
+}
