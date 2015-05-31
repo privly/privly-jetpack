@@ -32,7 +32,7 @@ DEALINGS IN THE SOFTWARE.
  * @author Sean McGregor
  * @version 0.4.1
  **/
-/* global chrome */
+/* global chrome(platform:CHROME), self(platform:FIREFOX) */
 /**
  * @namespace
  * Script injected into the host page.
@@ -40,27 +40,27 @@ DEALINGS IN THE SOFTWARE.
 var privly = {
 
   /**
-   * Platform this script is running in
+   * Platform this script is running in.
    */
-  platform: "",
+  platform: undefined,
 
   /**
-   * Sets and returns the platform
+   * Sets and returns the platform.
    */
-  setPlatformName: function() {
+  getPlatformName: function() {
     if (typeof chrome !== "undefined") {
       if (typeof chrome.extension !== "undefined") {
         if (typeof chrome.extension.sendMessage !== "undefined") {
-          this.platform = "CHROME";
+          privly.platform = "CHROME";
         }
       }
     }
     if (typeof self !== "undefined") {
       if (typeof self.port !== "undefined") {
-        this.platform = "FIREFOX";
+        privly.platform = "FIREFOX";
       }
     }
-    return this.platform;
+    return privly.platform;
   },
 
   /**
@@ -401,10 +401,10 @@ var privly = {
        };
 
     //Styling and display attributes
-     for(var key in attrs) 
-     {
-       iFrame.setAttribute(key, attrs[key]);
-     }
+    for(var key in attrs) 
+    {
+      iFrame.setAttribute(key, attrs[key]);
+    }
 
     //Determines whether the element will be shown after it is toggled.
     //This allows for the button to turn on and off the display of the
@@ -415,11 +415,14 @@ var privly = {
     object.style.display = "none";
 
     // Set the source URL
-    if (this.platform == "CHROME") { 
+    if (privly.platform == "CHROME") { 
       iFrame.setAttribute("src", applicationUrl);
     }
 
-    if (this.platform == "FIREFOX") {
+    //put the iframe into the page
+    object.parentNode.insertBefore(iFrame, object);
+
+    if (privly.platform === "FIREFOX") {
       // The url to give to the injectable application
       var url = applicationUrl;
 
@@ -445,9 +448,6 @@ var privly = {
       }
       frameDoc.location.href = path + encodeURIComponent(url);
     }
-
-    //put the iframe into the page
-    object.parentNode.insertBefore(iFrame, object);
   },
 
   /**
@@ -466,9 +466,9 @@ var privly = {
     var frameId = privly.nextAvailableFrameID++;
     var iframeUrl = object.getAttribute("data-privlyHref");
 
-    // Only the Chrome extension currently supports local code storage.
+    // Chrome extension supports local code storage.
     // other extensions will default to remote code execution.
-    if (this.platform === "CHROME") {
+    if (privly.platform === "CHROME") {
       chrome.extension.sendMessage(
         {privlyOriginalURL: iframeUrl},
         function(response) {
@@ -477,7 +477,9 @@ var privly = {
           }
         });
     } 
-    else if (this.platform === "FIREFOX") {
+    else if (privly.platform === "FIREFOX") {
+      // Firefox extension supports local code storage.
+      // the local URL for injection is set in privly.injectLinkApplication
       privly.injectLinkApplication(object, iframeUrl, frameId);
     } else {
       if (iframeUrl.indexOf("?") > 0){
@@ -623,15 +625,11 @@ var privly = {
   resizeIframePostedMessage: function(message){
 
     "use strict";
-
+    
     //check the format of the message
     if (typeof(message.origin) !== "string" ||
         typeof(message.data) !== "string" ||
         message.data.indexOf(',') < 1) {
-      return;
-    }
-    
-    if (this.platform === "FIREFOX") {
       return;
     }
 
@@ -650,14 +648,26 @@ var privly = {
       return;
     }
 
-    var sourceURL = iframe.getAttribute("src");
-    var originDomain = message.origin;
-    sourceURL = sourceURL.replace("http://", "https://");
-    originDomain = originDomain.replace("http://", "https://");
+    var valid = false;
 
-    //make sure the message comes from the expected domain
-    if (sourceURL.indexOf(originDomain) === 0)
-    {
+    if (privly.platform === "FIREFOX") {
+      if(message.origin === "chrome://privly") {
+        valid = true;     
+      }
+    } else {
+      var sourceURL = iframe.getAttribute("src");
+      var originDomain = message.origin;
+      sourceURL = sourceURL.replace("http://", "https://");
+      originDomain = originDomain.replace("http://", "https://");
+
+      //make sure the message comes from the expected domain
+      if (sourceURL.indexOf(originDomain) === 0)
+      {
+        valid = true;
+      }
+    }
+
+    if (valid === true) {
       iframe.style.height = data[1]+'px';
     }
   },
@@ -688,12 +698,11 @@ var privly = {
       return;
     }
 
-    // Deprecated method of deactivating injection from the
     // Firefox extension.
     var elements = document.getElementsByTagName("privModeElement");
-    if (elements.length > 0){
-      var extensionMode = parseInt(elements[0].getAttribute('mode'), 10);
-      if ( extensionMode !== 0 ) {
+    if (elements.length > 0) {
+      var extensionMode = elements[0].getAttribute("data-mode");
+      if ( extensionMode === "inactive" ) {
         return;
       }
     }
@@ -824,8 +833,6 @@ var privly = {
 
     "use strict";
 
-    return;
-
     //don't send a message if it is the top window
     if (top === this.self) {
       return;
@@ -951,7 +958,7 @@ var privly = {
   }
 };
 
-const platform = privly.setPlatformName();
+const platform = privly.getPlatformName();
 
 /*
  * In order to launch the content script loaded in each iframe of the page
@@ -970,9 +977,7 @@ if (platform === "CHROME") {
 if (platform == "FIREFOX") {
   self.port.on("confirmStart", function(message) {
     var confirmMessage = JSON.parse(message);
-    console.log("Confirming!");
     if (confirmMessage["start"] === "yes") {
-      console.log("Start!");
       privly.start();
     }
   });
