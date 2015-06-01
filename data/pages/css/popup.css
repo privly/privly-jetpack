@@ -4,9 +4,6 @@
   font-weight: 400;
   src: local('Lobster'), local('Lobster-Regular'), url(fonts/lobster.woff2) format('woff2'), url(fonts/lobster.woff) format('woff');
 }
-body {
-  background-color: #eee;
-}
 li {
   line-height: 18px;
 }
@@ -19,9 +16,6 @@ li {
 .panel {
   border: none;
   box-shadow: none;
-}
-.panel-body {
-  background-color: #eee;
 }
 .panel-heading h1,h2,h3 {
   font-family: 'Lobster', cursive;
