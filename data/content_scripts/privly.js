@@ -341,10 +341,9 @@ var privly = {
       "use strict";
       var anchors = document.links;
       var remaining = [];
-      var i = 0;
 
       // Pre-process
-      for( ; i < anchors.length; i++ ) {
+      for(var i=0 ; i < anchors.length; i++ ) {
         var a = anchors[i];
 
         // Save the current href
@@ -375,7 +374,13 @@ var privly = {
    */
   nextAvailableFrameID: 0,
 
-
+  /**
+   * Inject an application in place of object with the
+   * URL applicationUrl and give it the specified ID.
+   * @param {object} object The Object to inject the application next to.
+   * @param {string} applicationUrl The URL of the application we are injecting.
+   * @param {string} id The id of the application we are going to inject.
+   */
   injectLinkApplication: function(object, applicationUrl, id)
   {
     "use strict";
@@ -810,8 +815,7 @@ var privly = {
   toggleInjectionHelper: function(elements, displayStyle) {
 
     "use strict"; 
-    var i;
-    for(i = 0; i < elements.length; i++) {
+    for(var i = 0; i < elements.length; i++) {
       var element = elements[i];
       if (element.getAttribute("data-privly-display") === "true") {
         element.setAttribute("data-privly-display", "false");
