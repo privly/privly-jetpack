@@ -1,3 +1,7 @@
+/**
+ * @fileOverview Script acting as a "middleman" to allow communication between
+ * the extension and privly application.
+ */
 window.addEventListener("PrivlyMessageEvent", function(e) {
   // Firefox does not respect the targetOrigin for the postMessage command properly
   // if it is a Chrome origin page. So we must use the "*" origin in the message.
@@ -9,7 +13,6 @@ window.addEventListener("PrivlyMessageEvent", function(e) {
     if (data.handler === "messageSecret") {
       // Save the messageSecret
       self.port.emit("messageSecret", data.data);
-      // Send a message back to privly-applications.
       var message = JSON.stringify({secret: data.data,
                                     handler: "messageSecret"});
       window.postMessage(message, "*");
