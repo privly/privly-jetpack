@@ -199,7 +199,10 @@ Range.prototype = {
             if (/^{[^}]*}$/.test(c)) c = c.slice(1,-1); // deal with unknown {key}s
             for (var i =0; i < c.length; ++i){
                 var x = c.charCodeAt(i);
+                rng.dispatch({type: 'keydown', keyCode: x, which: x, charCode: x});
                 rng.dispatch({type: 'keypress', keyCode: x, which: x, charCode: x});
+                rng.dispatch({type: 'textinput', keyCode: x, which: x, charCode: x});
+                rng.dispatch({type: 'keyup', keyCode: x, which: x, charCode: x});
             }
             rng.text(c, 'end');
         }
@@ -252,25 +255,28 @@ Range.prototype = {
     element: function() { return this._el },
     // includes a quickie polyfill for CustomEvent for IE that isn't perfect but works for me
     // IE10 allows custom events but not "new CustomEvent"; have to do it the old-fashioned way
-    dispatch: function(opts){
+    dispatch: function(opts) {
+      var el = this._el;
+      // Define the event
+      if(/^(?:keypress|keyup|keydown|textinput)$/.test(opts.type)) {
+        var event = new KeyboardEvent(opts.type, {
+          bubbles : true,
+          cancelable : true,
+          charCode : opts.charCode, 
+          keyCode : opts.keyCode, 
+          which: opts.which,
+        });
+      } else {
         opts = opts || {};
         var event = document.createEvent ? document.createEvent('CustomEvent') : this._doc.createEventObject();
         event.initCustomEvent && event.initCustomEvent(opts.type, !!opts.bubbles, !!opts.cancelable, opts.detail);
         for (var key in opts) event[key] = opts[key];
-        // dispatch event asynchronously (in the sense of on the next turn of the event loop; still should be fired in order of dispatch
-        var el = this._el;
-        setTimeout(function(){
-            try {
-                el.dispatchEvent ? el.dispatchEvent(event) : el.fireEvent("on" + opts.type, document.createEventObject());
-                }catch(e){
-                // IE8 will not let me fire custom events at all. Call them directly
-                    var listeners = el['listen'+opts.type];
-                    if (listeners) for (var i = 0; i < listeners.length; ++i){
-                        listeners[i].call(el, event);
-                    }
-                }
-        }, 0);
-        return this;
+      }
+      // dispatch event asynchronously (in the sense of on the next turn of the event loop; still should be fired in order of dispatch
+      setTimeout(function(){
+        el.dispatchEvent(event);
+      }, 0);
+      return this;
     },
     listen: function (type, func){
         var el = this._el;
