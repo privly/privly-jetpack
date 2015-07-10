@@ -10,12 +10,18 @@ function dispatchClickEvent(target) {
   target.dispatchEvent(evt);
 }
 
-self.port.on("postURL", function(message) {
+/**
+ * Handles the receipt of Privly URL messages from the extension for the addition 
+ * to the host page.
+ *
+ * @param {Object} message Message containing Privly url to be posted in the host page.
+ */
+function postPrivlyURL(message) {
   // Check whether the privly URl is intended for the current location.
   if (message.pageURL === window.location.href) {
     // Target DOM node.
     var node = document.getElementById(message.nodeId);
-    // Status: complete or error
+    // Status: success or failure
     // Determines if the Privly Application Tab needs to be closed.
     var postStatus;
     if (node !== null) {
@@ -26,11 +32,13 @@ self.port.on("postURL", function(message) {
         bililiteRange(node).bounds('selection').sendkeys(message.privlyURL).select();
         self.port.emit("removeScript", "Delete worker!");
       }, 100);
-      postStatus = "complete";      
+      postStatus = "success";
     } else {
       // DOM element not found.
-      postStatus = "error";
+      postStatus = "failure";
     }
     self.port.emit("postStatus", postStatus);
   }
-});
+}
+
+self.port.on("postURL", postPrivlyURL);

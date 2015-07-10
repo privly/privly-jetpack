@@ -120,16 +120,25 @@ function addPrivlyButton() {
         text: "",
         pageURL: window.location.href,
       };
-      self.port.emit("PrivlyButtonClicked", info);
+      self.port.emit("privlyButtonClicked", info);
     }
   });
 }
 
-// Check if the posting button has been enabled?
-// i.e, if the disable option is unchecked.
-self.port.emit("showPrivlyBtn?", "Check for button status");
-self.port.on("privlyBtnStatus", function(message) {
+
+/**
+ * Handles the receipt of Privly button status from the extension. Depending on the
+ * status(enabled/disabled), the button is added into the document body.
+ *
+ * @param {String} message Message
+ */
+function buttonStatus(message) {
   if (message === "unchecked") {
     addPrivlyButton();
   }
-});
+}
+
+// Check if the posting button has been enabled?
+// i.e, if the disable option is unchecked.
+self.port.emit("requestBtnStatus", "Check for button status");
+self.port.on("privlyBtnStatus", buttonStatus);

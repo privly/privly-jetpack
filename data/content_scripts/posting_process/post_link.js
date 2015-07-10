@@ -17,7 +17,7 @@ if (typeof self.options.nodeId !== "undefined" &&
   // Target DOM node
   var node = document.getElementById(self.options.nodeId);
   var privlyURL = self.options.privlyURL;
-  // Status: complete or error
+  // Status: success or failure
   // Determines if the Privly Application Tab needs to be closed.
   var postStatus;
   if (node !== null) {
@@ -28,10 +28,10 @@ if (typeof self.options.nodeId !== "undefined" &&
       bililiteRange(node).bounds('selection').sendkeys(privlyURL).select();
       self.port.emit("removeScript", "Delete worker!");
     }, 100);
-    postStatus = "complete";    
+    postStatus = "success";    
   } else {
     // DOM element not found.
-    postStatus = "error";
+    postStatus = "failure";
   }
   self.port.emit("postStatus", postStatus);
 }
