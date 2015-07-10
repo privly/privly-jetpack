@@ -27,8 +27,11 @@ this.g = {
   // Jetpack windows object
   windows: PrivlyXPCOM.getWindows(),
 
-  // Privly Toolbar button object
+  // Privly UI Popup Button
   popupButton: PrivlyXPCOM.getPrivlyUI().popupButton,
+ 
+  // Privly Posting Process
+  postingProcess: PrivlyXPCOM.getPostingProcess().postingProcess,
 };
 
 // Console access to Terminal Reporter.
