@@ -7,7 +7,6 @@
 | hyperlink | String | Notifies the extension about the popup menu option clicked by the user. |
 | requestPrivlyStart | String | Requests the popup button state, i.e, whether injection is enabled/disabled. |
 | postStatus | String | Indicates a successful or failed post. |
-| removeScript | String | The extension can now remove the content script instance. |
 | requestBtnStatus | String | Requests the privly button status, i.e, whether Privly button is enabled/disabled. |
 | privlyButtonClicked | Object | Contents: <ul><li>nodeId: Target Node identifier</li><li>text: Selection text</li><li>pageURL: Host page URL</li></ul> |
 | messageSecret | String | Message secret provided by the privly application. |

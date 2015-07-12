@@ -1,5 +1,6 @@
 /**
  * @fileOverview Provides global object (g) accessible in the unit tests.
+ *
  **/
 // XPCOM object defined in lib/xpcom.js
 const PrivlyXPCOM = Components.classes["@privly.test/jetpack;1"].
