@@ -18,11 +18,11 @@ describe("Local Storage Shim Suite", function() {
          },
   };
 
-  it("tests preferences presence", function() {
+  it("checks localStorage presence", function() {
     expect(g.ls.localStorageDefined).toBe(false);
   });
 
-  it("tests ls.setItem, ls.removeItem", function() {
+  it("Sets a preference", function() {
     g.ls.setItem("test", "foobar");
     expect(prefs.get("test", undefined)).toBe("foobar");
     // cleanup
@@ -30,7 +30,7 @@ describe("Local Storage Shim Suite", function() {
     expect(prefs.get("test", undefined)).toBeUndefined();
   });
 
-  it("tests ls.getItem, ls.removeItem", function() {
+  it("Gets stored preference", function() {
     prefs.set("test", "foobar");
     expect(g.ls.getItem("test")).toBe("foobar");
     // cleanup

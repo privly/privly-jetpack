@@ -7,7 +7,7 @@ describe("Privly UI Suite", function() {
 
   var pb = g.popupButton;
 
-  it("tests setup", function() {
+  it("Popup button and panel are setup", function() {
     expect(pb.button).toBeDefined();
     expect(pb.panel).toBeDefined();
   });
@@ -27,7 +27,7 @@ describe("Privly UI Suite", function() {
     show: function(params) { return; },
   };
 
-  it("tests getButtonState", function() {
+  it("Gets the popup button state", function() {
     // default state - active
     expect(pb.getButtonState()).toBe("active");
     // switch state
@@ -35,7 +35,7 @@ describe("Privly UI Suite", function() {
     expect(pb.getButtonState()).toBe("inactive");
   });
 
-  it("tests openPages", function() {
+  it("Responds to popup menu item clicked", function() {
     spyOn(pb, "toggleButtonState").and.callFake(function() { return; });
     spyOn(pb.panel.port, "emit").and.callFake(function(message_id, message) { return; });
     spyOn(pb, "getButtonState").and.callFake(function() { return "active"; });
@@ -45,7 +45,7 @@ describe("Privly UI Suite", function() {
     expect(pb.panel.port.emit.calls.argsFor(0)).toEqual(["extensionMode", "active"]);
   });
  
-  it("tests toggleButtonState", function() {
+  it("Toggles the button state", function() {
     spyOn(pb.button, "state");
     // "Active" button
     pb.button.label = pb.ACTIVE.label;
@@ -59,7 +59,7 @@ describe("Privly UI Suite", function() {
     expect(pb.button.state.calls.argsFor(1)).toEqual([pb.button, pb.ACTIVE]);
   });
   
-  it("tests handleChange", function() {
+  it("Responds to change of popup button state", function() {
     // Set functions to be spied on
     spyOn(pb.panel, "show");
     spyOn(pb.panel.port, "emit");  

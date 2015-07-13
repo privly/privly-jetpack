@@ -36,17 +36,17 @@ describe("Posting Process Suite", function() {
     };
   });
 
-  it("tests menuSetup", function() {
+  it("Notification panels are setup", function() {
     expect(pp.pendingNotification).toBeDefined();
     expect(pp.errorNotification).toBeDefined();
   });
     
-  it("tests notificationScript", function() {
+  it("Notification script should include type", function() {
     expect(pp.notificationScript("foobar")).toMatch(/foobar/);
     expect(pp.notificationScript("error")).toMatch(/error/);
   });
 
-  it("tests hideNotification", function() {
+  it("Hides the Notification panel", function() {
     spyOn(pp.errorNotification, "hide");
     pp.hideNotification("error");
     expect(pp.errorNotification.hide).toHaveBeenCalled();
@@ -55,7 +55,7 @@ describe("Posting Process Suite", function() {
     expect(pp.pendingNotification.hide).toHaveBeenCalled();
   });
 
-  it("tests sendBtnStatus", function() {
+  it("Sends privly button status to content script", function() {
     spyOn(worker.port, "emit");
     // Default option is false
     expect(g.ls.getItem("Options:DissableButton")).toBe(false);
@@ -69,12 +69,12 @@ describe("Posting Process Suite", function() {
     expect(worker.port.emit.calls.argsFor(1)).toEqual(["privlyBtnStatus", "checked"]);
   });
 
-  it("tests saveSecret", function() {
+  it("Saves message secret", function() {
     pp.saveSecret("foobar");
     expect(pp.messageSecret).toBe("foobar");
   });
  
-  it("tests sendInitialContent", function() {
+  it("Sends initial content to content script", function() {
     spyOn(worker.port, "emit");
     pp.messageSecret = "foo";
     pp.postingApplicationStartingValue = "bar";
@@ -91,7 +91,7 @@ describe("Posting Process Suite", function() {
       toEqual(["initialContent", {secret: "bar", initialContent: "bar"}]);
   });
 
-  it("tests postStatusHandler", function() {
+  it("Closes privly app window on successful post, displays error on failed post", function() {
     spyOn(pp.errorNotification, "show");
     flag = 0;
     spyOn(pp.postingApplicationTab, "close").and.callFake(function() {
@@ -107,7 +107,7 @@ describe("Posting Process Suite", function() {
     expect(pp.errorNotification.show).toHaveBeenCalled();
   });
 
-  it("tests receivePrivlyURL", function() {
+  it("Sends privly URL to the host page", function() {
     var privlyURL = "https://privly.url";
     spyOn(worker.port, "emit");
     pp.pageURL = "https://page.url";
@@ -121,7 +121,7 @@ describe("Posting Process Suite", function() {
     expect(pp.pendingPost).toBe(false);
   });
 
-  it("tests postingHandler", function() {
+  it("Starts the posting process on request, notifies user on a pending post", function() {
     spyOn(pp.pendingNotification, "show");
     var info =  {
       pageURL: "chrome://privly/content/test/test_loader.html",
@@ -137,7 +137,7 @@ describe("Posting Process Suite", function() {
     expect(pp.targetNodeId).toBe("fakenode");
   });
 
-  it("tests tabClosed", function() {
+  it("Cancels the posting process on tab closure", function() {
     spyOn(pp.postingApplicationTab, "close");
     pp.pendingPost = true;
     pp.tabClosed({}, "resultTab");

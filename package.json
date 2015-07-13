@@ -6,8 +6,8 @@
   "main": "lib/extension.js",
   "author": "Sean McGregor, Daniel Reichert, Hitesh Sharma",
   "engines": {
-    "firefox": ">=30.0a1",
-    "fennec": ">=30.0a1"
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
   },
   "license": "OSI - MIT License",
   "permissions": {
