@@ -2,10 +2,20 @@
  * @fileOverview Displays the Privly "New Message" button on clicking a
  * content editable DOM element.
  */
+
+/**
+ * @namespace Posting Process
+ * If postingProcess namespace is not initialized, initialize it
+ */
+var postingProcess;
+if (postingProcess === undefined) {
+  postingProcess = {};
+}
+
 /**
  * Shows a button in editable content areas for starting a Privly Post.
  */
-function addPrivlyButton() {
+postingProcess.addPrivlyButton = function() {
 
   // Create a div to handle the privly button
   var div = document.createElement("div");
@@ -47,10 +57,8 @@ function addPrivlyButton() {
       // The button can now be click-able
       span.style.cursor = "pointer";
 
-      if (evt.target.id === "") {
-        evt.target.id = "privly" + Math.random().toString(36).substring(2);
-      }
-      targetNodeId = evt.target.id.slice(0);
+      // Set privly attribute so that the node can be identified.
+      evt.target.setAttribute("data-privly-target-node", "true");
 
       active = true;
       div.style.zIndex = "999";
@@ -116,7 +124,6 @@ function addPrivlyButton() {
     // Check if the button has been triggered i.e. the opacity is 0.7
     if (active && (getComputedStyle(div).getPropertyValue("opacity") > 0)) {
       var info = {
-        nodeId: targetNodeId,
         text: "",
         pageURL: window.location.href,
       };
@@ -125,20 +132,19 @@ function addPrivlyButton() {
   });
 }
 
-
 /**
  * Handles the receipt of Privly button status from the extension. Depending on the
  * status(enabled/disabled), the button is added into the document body.
  *
  * @param {String} message Message
  */
-function buttonStatus(message) {
+postingProcess.buttonStatus = function(message) {
   if (message === "unchecked") {
-    addPrivlyButton();
+    postingProcess.addPrivlyButton();
   }
 }
 
 // Check if the posting button has been enabled?
 // i.e, if the disable option is unchecked.
 self.port.emit("requestBtnStatus", "Check for button status");
-self.port.on("privlyBtnStatus", buttonStatus);
+self.port.on("privlyBtnStatus", postingProcess.buttonStatus);

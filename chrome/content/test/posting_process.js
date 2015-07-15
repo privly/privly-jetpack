@@ -7,16 +7,6 @@ describe("Posting Process Suite", function() {
 
   var pp = g.postingProcess;
 
-  pp.errorNotification = {
-    show: function() { return; },
-    hide: function() { return; },
-  };
-
-  pp.pendingNotification = {
-    show: function() { return; },
-    hide: function() { return; },
-  };
-  
   var worker =  {
     port: {
       emit: function(message_id, message) { return; },
@@ -40,7 +30,17 @@ describe("Posting Process Suite", function() {
     expect(pp.pendingNotification).toBeDefined();
     expect(pp.errorNotification).toBeDefined();
   });
-    
+
+  pp.errorNotification = {
+    show: function() { return; },
+    hide: function() { return; },
+  };
+
+  pp.pendingNotification = {
+    show: function() { return; },
+    hide: function() { return; },
+  };
+  
   it("Notification script should include type", function() {
     expect(pp.notificationScript("foobar")).toMatch(/foobar/);
     expect(pp.notificationScript("error")).toMatch(/error/);
@@ -111,13 +111,12 @@ describe("Posting Process Suite", function() {
     var privlyURL = "https://privly.url";
     spyOn(worker.port, "emit");
     pp.pageURL = "https://page.url";
-    pp.targetNodeId = "fakenode";
     pp.workers = [worker];
     pp.pendingPost = true;
     pp.receivePrivlyURL(privlyURL);
     expect(worker.port.emit).toHaveBeenCalled();
     expect(worker.port.emit.calls.argsFor(0)).
-      toEqual(["postURL", {privlyURL: privlyURL, nodeId: "fakenode", pageURL: "https://page.url"}]);
+      toEqual(["postURL", {privlyURL: privlyURL, pageURL: "https://page.url"}]);
     expect(pp.pendingPost).toBe(false);
   });
 
@@ -126,7 +125,6 @@ describe("Posting Process Suite", function() {
     var info =  {
       pageURL: "chrome://privly/content/test/test_loader.html",
       text: "Hello",
-      nodeId: "fakenode",
     };
     pp.pendingPost = true;
     pp.postingHandler(info);
@@ -134,7 +132,6 @@ describe("Posting Process Suite", function() {
     pp.pendingPost = false;
     pp.postingHandler(info);
     expect(pp.pendingPost).toBe(true);
-    expect(pp.targetNodeId).toBe("fakenode");
   });
 
   it("Cancels the posting process on tab closure", function() {

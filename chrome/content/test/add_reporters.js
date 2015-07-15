@@ -1,6 +1,6 @@
 /**
- * @fileOverview Defines the Jasmine Terminal Reporter.
- * 
+ * @fileOverview Defines the Jasmine Terminal Reporter. This allows logging of test
+ * results in the terminal, useful for CI/Travis-CI.
  **/
 /* global jasmine, g */
 (function() {
@@ -14,6 +14,7 @@
   terminalReporter.jasmineDone = function() {
     old_callback();
     // Close the browser on completing tests.
+    // Comment the setTimeout if you don't want the above behaviour.
     setTimeout(function() {
       var windows = g.windows.browserWindows;
       for (var i=0; i<windows.length; i++) {

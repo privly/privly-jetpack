@@ -1,6 +1,8 @@
 /**
  * @fileOverview Test suite for 
- * chrome/content/privly-applications/shared/javascripts/local_storage.js
+ * chrome/content/privly-applications/shared/javascripts/local_storage.js.
+ * This tests the Firefox preferences service to store settings. The more general test cases can be found @
+ * chrome/content/privly-applications/shared/test/local_storage.js
  *
  **/
 /* global describe, it, expect, g */

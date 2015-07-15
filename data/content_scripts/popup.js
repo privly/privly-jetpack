@@ -4,12 +4,17 @@
  * self.port.
  */
 
+/**
+ * @namespace Popup panel
+ */ 
+var popup = {};
+
 /* Handles the receipt of "extensionMode" message from the add-on.
  * Changes the label in popup.html accordingly.
  * 
  * @param {String} message Message from the add-on.
  */
-function toggleLabel(message) {
+popup.toggleLabel = function(message) {
   if (typeof message === "string") {
     extMode = window.document.getElementById("extensionMode");
     if (message === "active") {
@@ -30,7 +35,7 @@ function toggleLabel(message) {
  *
  * @param {Object} event Click event.
  */
-function popupClickHandler(event) {
+popup.clickHandler = function(event) {
   var target = event.target;
   var className = target.className;
   // Only respond to click events on specific DOM elements.
@@ -51,5 +56,5 @@ function popupClickHandler(event) {
   }
 }
 
-self.port.on("extensionMode", toggleLabel);
-window.addEventListener("click", popupClickHandler, false);
+self.port.on("extensionMode", popup.toggleLabel);
+window.addEventListener("click", popup.clickHandler, false);

@@ -1,12 +1,22 @@
 /**
  * @fileOverview Script used to post the privly URL into the Host page target node.
  */
+
+/**
+ * @namespace Posting Process
+ * If postingProcess namespace is not initialized, initialize it
+ */
+var postingProcess;
+if (postingProcess === undefined) {
+  postingProcess = {};
+}
+
 /**
  * Dispatches a mouse "click" event on the specified target node.
  * 
  * @param {Object} target DOM node.
  */
-function dispatchClickEvent(target) {
+postingProcess.dispatchClickEvent = function(target) {
   var evt = new MouseEvent("click", {
     bubbles: true,
     cancelable: true,
@@ -21,18 +31,20 @@ function dispatchClickEvent(target) {
  *
  * @param {Object} message Message containing Privly url to be posted in the host page.
  */
-function postPrivlyURL(message) {
+postingProcess.postPrivlyURL = function(message) {
   // Check whether the privly URl is intended for the current location.
   if (message.pageURL === window.location.href) {
     // Target DOM node.
-    var node = document.getElementById(message.nodeId);
+    var node = document.querySelector("[data-privly-target-node]");
     // Status: success or failure
     // Determines if the Privly Application Tab needs to be closed.
     var postStatus;
     if (node !== null) {
+      // Remove the privly attribute.
+      node.removeAttribute("data-privly-target-node");
       node.focus();
       // Click the form to trigger any click callbacks
-      dispatchClickEvent(node);
+      postingProcess.dispatchClickEvent(node);
       setTimeout(function() {
         bililiteRange(node).bounds('selection').sendkeys(message.privlyURL).select();
         self.port.emit("removeScript", "Delete worker!");
@@ -46,4 +58,4 @@ function postPrivlyURL(message) {
   }
 }
 
-self.port.on("postURL", postPrivlyURL);
+self.port.on("postURL", postingProcess.postPrivlyURL);

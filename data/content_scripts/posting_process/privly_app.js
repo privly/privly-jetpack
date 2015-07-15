@@ -4,6 +4,15 @@
  */
 
 /**
+ * @namespace Posting Process
+ * If postingProcess namespace is not initialized, initialize it
+ */
+var postingProcess;
+if (postingProcess === undefined) {
+  postingProcess = {};
+}
+
+/**
  * Handles the receipt of initial content from the extension. This content is then 
  * sent to the privly application
  * 
@@ -11,7 +20,7 @@
  *                      and the message secret(used to establish communication between the
  *                      content scripts and privly-applications).
  */
-function initialContentHandler(data) {
+postingProcess.initialContentHandler = function(data) {
   var message = JSON.stringify({
                   secret: data.secret,
                   handler: "initialContent",
@@ -43,7 +52,7 @@ window.addEventListener("PrivlyMessageEvent", function(e) {
       // Send initialContent to Privly Application
       self.port.emit("requestInitialContent", "initialContent");
       // initialContent or privlyApplicationStartingValue
-      self.port.on("initialContent", initialContentHandler);
+      self.port.on("initialContent", postingProcess.initialContentHandler);
     }
   }
 }, false, true);
