@@ -16,6 +16,7 @@ describe("Posting Process Suite", function() {
   };
 
   beforeEach(function() {
+    pp.workers = [];
     pp.postingApplicationTab = {
       close: function() { return; },
     };
@@ -29,6 +30,27 @@ describe("Posting Process Suite", function() {
   it("Notification panels are setup", function() {
     expect(pp.pendingNotification).toBeDefined();
     expect(pp.errorNotification).toBeDefined();
+  });
+
+  it("Adds a worker to the list of workers", function() {
+    pp.addWorker(worker);
+    expect(pp.workers.length).toBe(1);
+    expect(pp.workers[0]).toBe(worker);
+    pp.addWorker(worker);
+    // Should not add duplicates
+    expect(pp.workers.length).toBe(1);
+    pp.addWorker("Another worker");
+    expect(pp.workers.length).toBe(2);
+  });
+    
+  it("Removes a worker from the list of workers", function() {
+    pp.addWorker(worker);
+    expect(pp.workers.length).toBe(1);
+    pp.removeWorker(worker);
+    expect(pp.workers.length).toBe(0);
+    pp.removeWorker(worker);
+    // Should not throw an error
+    expect(pp.workers.length).toBe(0);
   });
 
   pp.errorNotification = {
