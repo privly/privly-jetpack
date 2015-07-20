@@ -124,6 +124,10 @@ postingProcess.addPrivlyButton = function() {
   span.addEventListener("click", function() {
     // Check if the button has been triggered i.e. the opacity is 0.7
     if (active && (getComputedStyle(div).getPropertyValue("opacity") > 0)) {
+      // Add a DOM element so that we know the host page.
+      var pendingNode = document.createElement("privlyPostingProcess");
+      pendingNode.id = "privly-pending-post";
+      document.body.appendChild(pendingNode);
       var info = {
         nodeId: targetNodeId,
         text: "",
