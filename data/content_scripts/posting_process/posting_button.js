@@ -126,7 +126,7 @@ postingProcess.addPrivlyButton = function() {
     if (active && (getComputedStyle(div).getPropertyValue("opacity") > 0)) {
       // Add a DOM element so that we know the host page.
       var pendingNode = document.createElement("privlyPostingProcess");
-      pendingNode.id = "privly-pending-post";
+      pendingNode.id = "privly-pending-post-" + targetNodeId;
       document.body.appendChild(pendingNode);
       var info = {
         nodeId: targetNodeId,

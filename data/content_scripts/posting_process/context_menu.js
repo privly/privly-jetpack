@@ -25,7 +25,7 @@ postingProcess.menuClickHandler = function(node, data) {
   node.setAttribute("data-privly-target-node", targetNodeId);
   // Add a DOM element so that we know the host page.
   var pendingNode = document.createElement("privlyPostingProcess");
-  pendingNode.id = "privly-pending-post";
+  pendingNode.id = "privly-pending-post-" + targetNodeId;
   document.body.appendChild(pendingNode);
   // Extract the selection text.
   // Uses bililiteRange library(sendkeys.js)

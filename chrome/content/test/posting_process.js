@@ -133,18 +133,20 @@ describe("Posting Process Suite", function() {
     var privlyURL = "https://privly.url";
     spyOn(worker.port, "emit");
     pp.pageURL = "https://page.url";
+    pp.targetNodeId = "fakenode";
     pp.workers = [worker];
     pp.pendingPost = true;
     pp.receivePrivlyURL(privlyURL);
     expect(worker.port.emit).toHaveBeenCalled();
     expect(worker.port.emit.calls.argsFor(0)).
-      toEqual(["postURL", {privlyURL: privlyURL, pageURL: "https://page.url"}]);
+      toEqual(["postURL", {privlyURL: privlyURL, nodeId: "fakenode", pageURL: "https://page.url"}]);
     expect(pp.pendingPost).toBe(false);
   });
 
   it("Starts the posting process on request, notifies user on a pending post", function() {
     spyOn(pp.pendingNotification, "show");
     var info =  {
+      nodeId: "fakenode",
       pageURL: "chrome://privly/content/test/test_loader.html",
       text: "Hello",
     };
@@ -154,6 +156,7 @@ describe("Posting Process Suite", function() {
     pp.pendingPost = false;
     pp.postingHandler(info);
     expect(pp.pendingPost).toBe(true);
+    expect(pp.targetNodeId).toBe("fakenode");
   });
 
   it("Cancels the posting process on tab closure", function() {

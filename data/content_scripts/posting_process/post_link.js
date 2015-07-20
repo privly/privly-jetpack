@@ -34,7 +34,7 @@ postingProcess.dispatchClickEvent = function(target) {
 postingProcess.postPrivlyURL = function(message) {
   // Check whether the privly URl is intended for the current location.
   if (message.pageURL === window.location.href) {
-    var pendingNode = document.getElementById("privly-pending-post");
+    var pendingNode = document.getElementById("privly-pending-post-" + message.nodeId);
     if (pendingNode !== null) {
       // Target DOM node.
       var node = document.querySelector("[data-privly-target-node='" + message.nodeId + "']");
