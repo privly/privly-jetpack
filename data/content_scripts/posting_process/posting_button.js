@@ -57,8 +57,9 @@ postingProcess.addPrivlyButton = function() {
       // The button can now be click-able
       span.style.cursor = "pointer";
 
+      targetNodeId = Math.random().toString(36).substring(2) + Date.now().toString(36);
       // Set privly attribute so that the node can be identified.
-      evt.target.setAttribute("data-privly-target-node", "true");
+      evt.target.setAttribute("data-privly-target-node", targetNodeId);
 
       active = true;
       div.style.zIndex = "999";
@@ -124,6 +125,7 @@ postingProcess.addPrivlyButton = function() {
     // Check if the button has been triggered i.e. the opacity is 0.7
     if (active && (getComputedStyle(div).getPropertyValue("opacity") > 0)) {
       var info = {
+        nodeId: targetNodeId,
         text: "",
         pageURL: window.location.href,
       };

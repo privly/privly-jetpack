@@ -35,19 +35,16 @@ postingProcess.postPrivlyURL = function(message) {
   // Check whether the privly URl is intended for the current location.
   if (message.pageURL === window.location.href) {
     // Target DOM node.
-    var node = document.querySelector("[data-privly-target-node]");
+    var node = document.querySelector("[data-privly-target-node='" + message.nodeId + "']");
     // Status: success or failure
     // Determines if the Privly Application Tab needs to be closed.
     var postStatus;
     if (node !== null) {
-      // Remove the privly attribute.
-      node.removeAttribute("data-privly-target-node");
       node.focus();
       // Click the form to trigger any click callbacks
       postingProcess.dispatchClickEvent(node);
       setTimeout(function() {
         bililiteRange(node).bounds('selection').sendkeys(message.privlyURL).select();
-        self.port.emit("removeScript", "Delete worker!");
       }, 100);
       postStatus = "success";
     } else {

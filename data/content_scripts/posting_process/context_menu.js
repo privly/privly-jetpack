@@ -20,12 +20,14 @@ if (postingProcess === undefined) {
  * @param {Object} data Data property of the menu item that was clicked.
  */
 postingProcess.menuClickHandler = function(node, data) {
+  var targetNodeId = Math.random().toString(36).substring(2) + Date.now().toString(36);
   // Set privly attribute so that the node can be identified.
-  node.setAttribute("data-privly-target-node", "true");
+  node.setAttribute("data-privly-target-node", targetNodeId);
   // Extract the selection text.
   // Uses bililiteRange library(sendkeys.js)
   var selectionText = bililiteRange(node).selection();
   var info = {
+    nodeId: targetNodeId,
     text: selectionText,
     pageURL: window.location.href,
   };
