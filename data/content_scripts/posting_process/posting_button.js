@@ -34,7 +34,7 @@ postingProcess.addPrivlyButton = function() {
   div.appendChild(span);
 
   var active, hovered, timeout;
-  var targetNodeId, parentOffsets, offsets, rightMargin, topMargin;
+  var parentOffsets, offsets, rightMargin, topMargin;
 
   var timeoutLength = 5000;
 
@@ -57,9 +57,9 @@ postingProcess.addPrivlyButton = function() {
       // The button can now be click-able
       span.style.cursor = "pointer";
 
-      targetNodeId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      // Set privly attribute so that the node can be identified.
-      evt.target.setAttribute("data-privly-target-node", targetNodeId);
+      // Save the target node, so that we can add the identifier attribute once
+      // the posting process is initiated.
+      postingProcess.targetNode = evt.target;
 
       active = true;
       div.style.zIndex = "999";
@@ -124,6 +124,11 @@ postingProcess.addPrivlyButton = function() {
   span.addEventListener("click", function() {
     // Check if the button has been triggered i.e. the opacity is 0.7
     if (active && (getComputedStyle(div).getPropertyValue("opacity") > 0)) {
+
+      var targetNodeId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      // Set privly attribute so that the node can be identified.
+      postingProcess.targetNode.setAttribute("data-privly-target-" + targetNodeId, "true");
+
       // Add a DOM element so that we know the host page.
       var pendingNode = document.createElement("privlyPostingProcess");
       pendingNode.id = "privly-pending-post-" + targetNodeId;

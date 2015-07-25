@@ -13,8 +13,8 @@
   var old_callback = terminalReporter.jasmineDone;
   terminalReporter.jasmineDone = function() {
     old_callback();
-    // Close the browser on completing tests.
-    // Comment the setTimeout if you don't want the above behaviour.
+    // Comment out the setTimeout if you don't want the browser 
+    // to close upon test completion.
     setTimeout(function() {
       var windows = g.windows.browserWindows;
       for (var i=0; i<windows.length; i++) {

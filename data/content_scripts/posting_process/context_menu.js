@@ -22,7 +22,7 @@ if (postingProcess === undefined) {
 postingProcess.menuClickHandler = function(node, data) {
   var targetNodeId = Math.random().toString(36).substring(2) + Date.now().toString(36);
   // Set privly attribute so that the node can be identified.
-  node.setAttribute("data-privly-target-node", targetNodeId);
+  node.setAttribute("data-privly-target-" + targetNodeId, "true");
   // Add a DOM element so that we know the host page.
   var pendingNode = document.createElement("privlyPostingProcess");
   pendingNode.id = "privly-pending-post-" + targetNodeId;

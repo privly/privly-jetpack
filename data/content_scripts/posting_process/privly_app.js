@@ -29,12 +29,18 @@ postingProcess.initialContentHandler = function(data) {
   window.postMessage(message, "*");
 }
 
-window.addEventListener("PrivlyMessageEvent", function(e) {
+/**
+ * "PrivlyMessageEvent" Event handler. This event is fired from privly-applications
+ * and is used to send messages to the content scripts injected in the application.
+ *
+ * @param {Object} e Javascript Event Object
+ */
+postingProcess.privlyMessageEventHandler = function(e) {
   // Firefox does not respect the targetOrigin for the postMessage command properly
   // if it is a Chrome origin page. So we must use the "*" origin in the message.
   // To make this safer, we check that the owning document is in a privly controlled
   // window.
-  if ( e.originalTarget.ownerDocument.defaultView.location.origin === ("chrome://privly")) {
+  if (e.originalTarget.ownerDocument.defaultView.location.origin === ("chrome://privly")) {
     // e.originalTarget.ownerDocument;
     var data = JSON.parse(e.target.getAttribute("data-message-body"));
     if (data.handler === "messageSecret") {
@@ -43,11 +49,11 @@ window.addEventListener("PrivlyMessageEvent", function(e) {
       var message = JSON.stringify({secret: data.data,
                                     handler: "messageSecret"});
       window.postMessage(message, "*");
-    } 
+    }
     else if(data.handler === "privlyUrl") {
       // Send the extension the Privly URL received from Privly Applications.
       self.port.emit("setPrivlyURL", data.data);
-    } 
+    }
     else if(data.handler == "initialContent") {
       // Send initialContent to Privly Application
       self.port.emit("requestInitialContent", "initialContent");
@@ -55,4 +61,6 @@ window.addEventListener("PrivlyMessageEvent", function(e) {
       self.port.on("initialContent", postingProcess.initialContentHandler);
     }
   }
-}, false, true);
+}
+
+window.addEventListener("PrivlyMessageEvent", postingProcess.privlyMessageEventHandler, false, true);
