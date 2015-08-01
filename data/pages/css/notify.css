@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'Lobster';
+  src: url("fonts/Lobster_1.3.otf") format("opentype");
+}
+#privly-heading {
+  font-family: 'Lobster', cursive;
+}
+#notify {
+  padding-left: 1em;
+}

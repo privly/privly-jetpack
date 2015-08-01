@@ -979,11 +979,11 @@ if (platform === "CHROME") {
 }
 
 if (platform == "FIREFOX") {
-  self.port.on("confirmStart", function(message) {
+  self.port.on("privlyStart", function(message) {
     var confirmMessage = JSON.parse(message);
     if (confirmMessage["start"] === "yes") {
       privly.start();
     }
   });
-  self.port.emit("startPrivly?", "startPrivly?");
+  self.port.emit("requestPrivlyStart", "startPrivly?");
 }
