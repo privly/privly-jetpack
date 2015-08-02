@@ -1,23 +1,23 @@
 /**
  * @fileOverview This script is injected in popup.html and is used to 
- * communicate with the add-on code by making use of the Jetpack messaging API,
- * self.port.
+ * communicate with the add-on code.
  */
 
 /**
  * @namespace Popup panel
- */ 
+ */
 var popup = {};
 
 /* Handles the receipt of "extensionMode" message from the add-on.
  * Changes the label in popup.html accordingly.
  * 
  * @param {String} message Message from the add-on.
+ * @param {Function} sendResponse Function used to send a response/message back.
  */
-popup.toggleLabel = function(message) {
-  if (typeof message === "string") {
-    extMode = window.document.getElementById("extensionMode");
-    if (message === "active") {
+popup.toggleLabel = function(message, sendResponse) {
+  if (message.name === "extensionMode") {
+    var extMode = window.document.getElementById("extensionMode");
+    if (message.content === "active") {
       // Label: on
       extMode.className = "label label-success event-toggleMode";
       extMode.innerHTML = "On";
@@ -50,11 +50,14 @@ popup.clickHandler = function(event) {
       if (idx !== -1) {
         // Extract the message from the class name.
         // Send message to add-on.
-        self.port.emit("hyperlink", className.substring(idx + length, className.length));
+        Privly.message.messageExtension({
+          name: "hyperlink",
+          content: className.substring(idx + length, className.length),
+        }, true).then(popup.toggleLabel);
       }
     }
   }
 }
 
-self.port.on("extensionMode", popup.toggleLabel);
+Privly.message.addListener(popup.toggleLabel);
 window.addEventListener("click", popup.clickHandler, false);

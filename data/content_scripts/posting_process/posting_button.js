@@ -138,7 +138,10 @@ postingProcess.addPrivlyButton = function() {
         text: "",
         pageURL: window.location.href,
       };
-      self.port.emit("privlyButtonClicked", info);
+      Privly.message.messageExtension({
+        name: "startPostingProcess",
+        content: info,
+      })
     }
   });
 }
@@ -149,13 +152,17 @@ postingProcess.addPrivlyButton = function() {
  *
  * @param {String} message Message
  */
-postingProcess.buttonStatus = function(message) {
-  if (message === "unchecked") {
-    postingProcess.addPrivlyButton();
+postingProcess.buttonStatus = function(response) {
+  if (response.name === "privlyBtnStatus") {
+    if (response.content === "unchecked") {
+      postingProcess.addPrivlyButton();
+    }
   }
 }
 
 // Check if the posting button has been enabled?
 // i.e, if the disable option is unchecked.
-self.port.emit("requestBtnStatus", "Check for button status");
-self.port.on("privlyBtnStatus", postingProcess.buttonStatus);
+Privly.message.messageExtension({
+  name: "requestBtnStatus",
+  content: "Check for button status",
+}, true).then(postingProcess.buttonStatus);

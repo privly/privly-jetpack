@@ -17,5 +17,6 @@ else {
 }
 
 if (typeof privly !== "undefined") {
+  privly.updateWhitelist(self.options.whitelist);
   privly.start();
 }
