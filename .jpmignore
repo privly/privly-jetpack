@@ -1,0 +1,26 @@
+# Ignore these files while packaging extension
+*.txt
+__MACOSX*
+*.sh
+*.xpi
+*.DS_Store
+*~
+.jpmignore
+*.md
+.travis.yml
+*.git*
+*.gitignore*
+.gitmodules
+.gitattributes*
+*.htaccess*
+*.template
+*.subtemplate
+chrome/content/privly-applications/test/
+chrome/content/privly-applications/*/test/*
+# Uncomment these before packaging the extension for Mozilla
+#chrome/content/test/
+#chrome/content/vendor/
+chrome/content/privly-applications/vendor/build.py
+LICENSE
+chrome/content/privly-applications/MIT-LICENSE
+test.json
