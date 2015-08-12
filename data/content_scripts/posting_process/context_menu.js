@@ -35,7 +35,7 @@ postingProcess.menuClickHandler = function(node, data) {
     text: selectionText,
     pageURL: window.location.href,
   };
-  self.postMessage(info);
+  self.postMessage({name: "startPostingProcess", content: info});
 }
 
 self.on("click", postingProcess.menuClickHandler);

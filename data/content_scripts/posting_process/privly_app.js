@@ -13,54 +13,46 @@ if (postingProcess === undefined) {
 }
 
 /**
- * Handles the receipt of initial content from the extension. This content is then 
- * sent to the privly application
+ * Responds to the intial content request from Privly Application and also handles
+ * the receipt of initial content from the extension. This content is then sent to 
+ * the privly application.
  * 
- * @param {Object} data Message sent by the extension. This includes the initial content 
- *                      and the message secret(used to establish communication between the
- *                      content scripts and privly-applications).
+ * @param {Object} message Message sent by Privly application.
+ * @param {Function} sendResponse Function used to send a response/message back.
  */
-postingProcess.initialContentHandler = function(data) {
-  var message = JSON.stringify({
-                  secret: data.secret,
-                  handler: "initialContent",
-                  initialContent: data.initialContent,
-                });
-  window.postMessage(message, "*");
-}
+postingProcess.initialContentHandler = function(message, sendResponse) {
 
-/**
- * "PrivlyMessageEvent" Event handler. This event is fired from privly-applications
- * and is used to send messages to the content scripts injected in the application.
- *
- * @param {Object} e Javascript Event Object
- */
-postingProcess.privlyMessageEventHandler = function(e) {
-  // Firefox does not respect the targetOrigin for the postMessage command properly
-  // if it is a Chrome origin page. So we must use the "*" origin in the message.
-  // To make this safer, we check that the owning document is in a privly controlled
-  // window.
-  if (e.originalTarget.ownerDocument.defaultView.location.origin === ("chrome://privly")) {
-    // e.originalTarget.ownerDocument;
-    var data = JSON.parse(e.target.getAttribute("data-message-body"));
-    if (data.handler === "messageSecret") {
-      // Save the messageSecret
-      self.port.emit("messageSecret", data.data);
-      var message = JSON.stringify({secret: data.data,
-                                    handler: "messageSecret"});
-      window.postMessage(message, "*");
-    }
-    else if(data.handler === "privlyUrl") {
-      // Send the extension the Privly URL received from Privly Applications.
-      self.port.emit("setPrivlyURL", data.data);
-    }
-    else if(data.handler == "initialContent") {
-      // Send initialContent to Privly Application
-      self.port.emit("requestInitialContent", "initialContent");
-      // initialContent or privlyApplicationStartingValue
-      self.port.on("initialContent", postingProcess.initialContentHandler);
-    }
+  if (message.ask === "initialContent") {
+    Privly.message.messageExtension({
+      name: "requestInitialContent",
+      content: "Ask for Initial Content",
+    }, true).then(function(response) {
+      // Send/Forward the response from the extension to the Privly application.
+      sendResponse({
+        name: response.name,
+        handler: response.name,
+        initialContent: response.content.initialContent,
+      });
+    });
   }
 }
 
-window.addEventListener("PrivlyMessageEvent", postingProcess.privlyMessageEventHandler, false, true);
+/**
+ * Handles the receipt of Privly URL from the Privly Application. Forwards the URL to 
+ * the extension.
+ * 
+ * @param {Object} message Message sent by Privly application.
+ * @param {Function} sendResponse Function used to send a response/message back.
+ */
+postingProcess.receivePrivlyURL = function(message, sendResponse) {
+
+  if (typeof message.privlyUrl === "string") {
+    Privly.message.messageExtension({
+      name: "setPrivlyURL",
+      content: message.privlyUrl,
+    });
+  }
+}
+
+Privly.message.addListener(postingProcess.initialContentHandler);
+Privly.message.addListener(postingProcess.receivePrivlyURL);
