@@ -14,7 +14,7 @@
   terminalReporter.jasmineDone = function() {
     old_callback();
     // Collects all the coverage info and sends it to a nodejs server.
-    // the server generates a coverage report.
+    // the server generates a coverage report. 
     g.reportCoverage();
   };
   jasmineEnv.addReporter(terminalReporter);

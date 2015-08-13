@@ -47,11 +47,11 @@ describe("Posting Process Suite", function() {
 
   it("Hides the Notification panel", function() {
 
-    spyOn(pp.errorNotification, "hide");
+    spyOn(pp.errorNotification, "hide").and.callFake(function() { return; });
     pp.hideNotification({name: "notificationClick", content: "error"});
     expect(pp.errorNotification.hide).toHaveBeenCalled();
 
-    spyOn(pp.pendingNotification, "hide");
+    spyOn(pp.pendingNotification, "hide").and.callFake(function() { return; });
     pp.hideNotification({name: "notificationClick", content: "pendingPost"});
     expect(pp.pendingNotification.hide).toHaveBeenCalled();
 

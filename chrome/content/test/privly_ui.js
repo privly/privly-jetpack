@@ -29,12 +29,13 @@ describe("Privly UI Suite", function() {
   describe("Mock Popup button", function() {
     
     beforeEach(function() {
-      // Fake the Jetpack button objects created during setup.
+      // Fake the Jetpack button and panel objects created during setup.
       // pb.button fakes require("sdk/ui/button/toggle").ToggleButton()
       pb.button = {
         label: pb.ACTIVE.label,
         state: function(obj, states) { return; }
       };
+      // pb.panel fakes require("sdk/panel").Panel()      
       pb.panel = {
         show: function(params) { return; }
       };
@@ -54,10 +55,8 @@ describe("Privly UI Suite", function() {
       spyOn(Privly.options, "getWhitelistRegExp").and.callFake(function() { 
         return "whitelist";
       });
+      spyOn(pb, "getButtonState").and.callFake(function() { return "inactive"; });
       spyOn(pb, "toggleButtonState").and.callFake(function() { return; });
-      spyOn(pb, "getButtonState").and.callFake(function() { 
-        return "inactive";
-      });
       pb.openPages({name: "hyperlink", content: "toggleMode"}, sendResponse);
       expect(pb.getButtonState).toHaveBeenCalled();
       expect(pb.toggleButtonState).toHaveBeenCalled();
@@ -87,7 +86,7 @@ describe("Privly UI Suite", function() {
     describe("Responds to clicks on Popup button", function() {
      
       beforeEach(function() {
-        spyOn(pb, "getButtonState").and.callFake(function() { return "active"; });
+        spyOn(pb, "getButtonState").and.callFake(function() { return "active" });
         spyOn(Privly.message, "messageContentScripts").and.callFake(function() {
           // Fake promise
           return { then: function() {} };

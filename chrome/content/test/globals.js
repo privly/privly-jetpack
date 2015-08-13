@@ -11,42 +11,42 @@ const PrivlyXPCOM = Components.classes["@privly.test/jetpack;1"].
 // Provides access to Jetpack API's and Add-on code CommonJS modules for unit testing.
 this.g = {
 
-  /*
-   * First run function
+  /**
+   * First run
    */
   firstRun: PrivlyXPCOM.getFirstRun().firstRun,
 
-  /*
+  /**
    * Extension load reason - install, upgrade, downgrade, update.
    */
   loadReason: PrivlyXPCOM.getSelfObject().loadReason,
 
-  /*
+  /**
    * Jetpack tabs object
    */
   tabs: PrivlyXPCOM.getTabs(),
 
-  /*
+  /**
    * Jetpack windows object
    */
   windows: PrivlyXPCOM.getWindows(),
 
-  /*
+  /**
    * Privly UI Popup Button
    */
   popupButton: PrivlyXPCOM.getPrivlyUI().popupButton,
  
-  /*
+  /**
    * Privly Posting Process
    */
   postingProcess: PrivlyXPCOM.getPostingProcess().postingProcess,
 
-  /*
+  /**
    * Privly Namespace - provides options interface and context messenger
    */
   Privly: PrivlyXPCOM.getPrivlyNamespace().Privly,
 
-  /*
+  /**
    * Closes the browser.
    */
   closeBrowser: function() {
@@ -58,7 +58,7 @@ this.g = {
     }, 2000);
   },
     
-  /*
+  /**
    * Collects the coverage info from every tested module and sends it to 
    * a nodejs server. The server then uses the coverage info to generate the 
    * reports, which is then sent to Coveralls.io.
