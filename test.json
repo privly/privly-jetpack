@@ -1,3 +1,4 @@
 {
-  "extensions.privly.test": "true"
+  "extensions.privly.test": "true",
+  "extensions.privly.extension_path": "replace_with_path"
 }

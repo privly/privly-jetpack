@@ -8,7 +8,7 @@ describe("First Run Suite", function() {
   var Privly = g.Privly;
   
   it("Stores initial config settings/preferences", function() {
-    g.firstRun(Privly);
+    g.firstRun.run(Privly);
     expect(g.loadReason).toBe("install");
     expect(Privly.storage.get("Options:DissableButton")).toBe(null);
     expect(Privly.storage.get("user_whitelist_csv")).toBe(null);

@@ -26,7 +26,7 @@ describe("Privly UI Suite", function() {
     expect(pb.panel).toBeDefined();
   });
 
-  describe("Tests with faked popup button", function() {
+  describe("Mock Popup button", function() {
     
     beforeEach(function() {
       // Fake the Jetpack button objects created during setup.
