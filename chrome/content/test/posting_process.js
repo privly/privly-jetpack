@@ -5,169 +5,188 @@
 /* global describe, it, expect, spyOn, g */
 describe("Posting Process Suite", function() {
 
-  var pp = g.postingProcess;
-
-  var worker =  {
-    port: {
-      emit: function(message_id, message) { return; },
-      on: function(message_id, callback) { return; },
-    },
-    destroy: function() { return; },
-  };
+  var pp = g.postingProcess,
+      Privly = g.Privly,
+      sendResponse;
 
   beforeEach(function() {
-    pp.workers = [];
     pp.postingApplicationTab = {
-      close: function() { return; },
+      close: function() { return; }
     };
     pp.postingResultTab = {
       close: function() { return; },
       activate: function() { return; },
-      attach: function() { return worker; },
+      attach: function() { return worker; }
     };
+    sendResponse = jasmine.createSpy("sendResponse");
   });
 
-  it("Notification panels are setup", function() {
+  it("Context Menu and Notification panels are setup", function() {
+
+    spyOn(Privly.message, "addListener").and.callFake(function() { return; });
+    spyOn(Privly.message.currentAdapter, "addWorker").
+      and.callFake(function() { return; });
+    spyOn(pp, "notificationScript");
+    
+    pp.menuSetup(g.uiButton, Privly);
+    
+    expect(pp.notificationScript.calls.count()).toBe(2);
+    expect(Privly.message.addListener).toHaveBeenCalled();
+    expect(Privly.message.currentAdapter.addWorker).toHaveBeenCalled();
     expect(pp.pendingNotification).toBeDefined();
     expect(pp.errorNotification).toBeDefined();
+
   });
 
-  it("Adds a worker to the list of workers", function() {
-    pp.addWorker(worker);
-    expect(pp.workers.length).toBe(1);
-    expect(pp.workers[0]).toBe(worker);
-    pp.addWorker(worker);
-    // Should not add duplicates
-    expect(pp.workers.length).toBe(1);
-    pp.addWorker("Another worker");
-    expect(pp.workers.length).toBe(2);
-  });
-    
-  it("Removes a worker from the list of workers", function() {
-    pp.addWorker(worker);
-    expect(pp.workers.length).toBe(1);
-    pp.removeWorker(worker);
-    expect(pp.workers.length).toBe(0);
-    pp.removeWorker(worker);
-    // Should not throw an error
-    expect(pp.workers.length).toBe(0);
-  });
-
-  pp.errorNotification = {
-    show: function() { return; },
-    hide: function() { return; },
-  };
-
-  pp.pendingNotification = {
-    show: function() { return; },
-    hide: function() { return; },
-  };
-  
   it("Notification script should include type", function() {
+
     expect(pp.notificationScript("foobar")).toMatch(/foobar/);
     expect(pp.notificationScript("error")).toMatch(/error/);
+
   });
 
   it("Hides the Notification panel", function() {
+
     spyOn(pp.errorNotification, "hide");
-    pp.hideNotification("error");
+    pp.hideNotification({name: "notificationClick", content: "error"});
     expect(pp.errorNotification.hide).toHaveBeenCalled();
+
     spyOn(pp.pendingNotification, "hide");
-    pp.hideNotification("pendingPost");
+    pp.hideNotification({name: "notificationClick", content: "pendingPost"});
     expect(pp.pendingNotification.hide).toHaveBeenCalled();
+
   });
 
-  it("Sends privly button status to content script", function() {
-    spyOn(worker.port, "emit");
-    // Default option is false
-    expect(g.ls.getItem("Options:DissableButton")).toBe(false);
-    pp.sendBtnStatus("foobar", worker);
-    expect(worker.port.emit).toHaveBeenCalled();
-    // Switch to another option
-    g.ls.setItem("Options:DissableButton", true);
-    pp.sendBtnStatus("foobar", worker);
-    expect(worker.port.emit).toHaveBeenCalled();
-    expect(worker.port.emit.calls.argsFor(0)).toEqual(["privlyBtnStatus", "unchecked"]);
-    expect(worker.port.emit.calls.argsFor(1)).toEqual(["privlyBtnStatus", "checked"]);
-  });
+  describe("Sends privly button status to content script -", function() {
 
-  it("Saves message secret", function() {
-    pp.saveSecret("foobar");
-    expect(pp.messageSecret).toBe("foobar");
-  });
- 
-  it("Sends initial content to content script", function() {
-    spyOn(worker.port, "emit");
-    pp.messageSecret = "foo";
-    pp.postingApplicationStartingValue = "bar";
-    pp.sendInitialContent("foobar", worker);
-    expect(worker.port.emit).toHaveBeenCalled();
-    expect(worker.port.emit.calls.argsFor(0)).
-      toEqual(["initialContent", {secret: "foo", initialContent: "bar"}]);
-    pp.messageSecret = "bar";
-    pp.sendInitialContent("foobar", worker);
-    expect(worker.port.emit).toHaveBeenCalled();
-    expect(worker.port.emit.calls.argsFor(1)).not.
-      toEqual(["initialContent", {secret: "foo", initialContent: "bar"}]);
-    expect(worker.port.emit.calls.argsFor(1)).
-      toEqual(["initialContent", {secret: "bar", initialContent: "bar"}]);
-  });
-
-  it("Closes privly app window on successful post, displays error on failed post", function() {
-    spyOn(pp.errorNotification, "show");
-    flag = 0;
-    spyOn(pp.postingApplicationTab, "close").and.callFake(function() {
-      flag = 1;
-      return;
+    it("Privly button is enabled", function() {
+      // Privly button should be enabled by default
+      expect(Privly.options.isPrivlyButtonEnabled()).toBe(true);
+      pp.sendBtnStatus({name: "requestBtnStatus", content: "foobar"}, sendResponse);
+      expect(sendResponse).toHaveBeenCalledWith({name: "privlyBtnStatus", content: "unchecked"});
     });
-    expect(pp.postingApplicationTab).toBeDefined();
-    expect(flag).toBe(0);
-    pp.postStatusHandler("success");
-    expect(flag).toBe(1);
-    expect(pp.postingApplicationTab).toBe(null);
-    pp.postStatusHandler("failure");
-    expect(pp.errorNotification.show).toHaveBeenCalled();
+    
+    it("Privly button is disabled", function() {
+      // Disable privly button
+      Privly.options.setPrivlyButtonEnabled(false);
+      pp.sendBtnStatus({name: "requestBtnStatus", content: "foobar"}, sendResponse);
+      expect(sendResponse).toHaveBeenCalledWith({name: "privlyBtnStatus", content: "checked"});
+    });
+
+  });
+
+  it("Sends initial content to content script", function() {
+    pp.postingApplicationStartingValue = "bar";
+    pp.sendInitialContent({name: "requestInitialContent", content: "foobar"}, sendResponse);
+    expect(sendResponse).toHaveBeenCalledWith({name: "initialContent", content: {initialContent: "bar"}});
+  });
+
+  describe("Responds to post status -", function() {
+    
+    it("Closes privly app window on successful post", function() {
+      spyOn(pp, "endPostingProcess");
+      spyOn(pp.postingApplicationTab, "close");
+      expect(pp.postingApplicationTab).toBeDefined();
+      pp.postStatusHandler({name: "postStatus", content: "success"}, sendResponse);
+      expect(pp.postingApplicationTab.close).toHaveBeenCalled();
+      expect(pp.endPostingProcess).toHaveBeenCalled();
+    });
+
+    it("Displays error on failed post", function() {
+      spyOn(pp.errorNotification, "show").and.callFake(function() { return; });
+      spyOn(pp, "endPostingProcess");
+      spyOn(pp.postingApplicationTab, "close");
+      pp.postStatusHandler({name: "postStatus", content: "failure"}, sendResponse);
+      expect(pp.errorNotification.show).toHaveBeenCalled();
+      expect(pp.endPostingProcess).toHaveBeenCalled();
+      expect(pp.postingApplicationTab.close).not.toHaveBeenCalled();
+    });
+
   });
 
   it("Sends privly URL to the host page", function() {
+    spyOn(pp.postingResultTab, "activate");
+    spyOn(Privly.message, "messageContentScripts").and.callFake(function() {
+      // Fake Promise
+      return { then: function() {} };
+    });
     var privlyURL = "https://privly.url";
-    spyOn(worker.port, "emit");
     pp.pageURL = "https://page.url";
     pp.targetNodeId = "fakenode";
-    pp.workers = [worker];
     pp.pendingPost = true;
-    pp.receivePrivlyURL(privlyURL);
-    expect(worker.port.emit).toHaveBeenCalled();
-    expect(worker.port.emit.calls.argsFor(0)).
-      toEqual(["postURL", {privlyURL: privlyURL, nodeId: "fakenode", pageURL: "https://page.url"}]);
+    pp.receivePrivlyURL({name: "setPrivlyURL", content: privlyURL}, sendResponse);
+    expect(pp.postingResultTab.activate).toHaveBeenCalled();
+    expect(Privly.message.messageContentScripts).toHaveBeenCalledWith({
+      name: "postURL", 
+      content: {privlyURL: privlyURL, nodeId: "fakenode", pageURL: "https://page.url"}
+    }, true);
+  });
+
+  describe("Starts the posting process on request -", function() {
+
+    var info;
+
+    beforeEach(function() {
+      info =  {
+        nodeId: "fakenode",
+        pageURL: "chrome://privly/content/test/test_loader.html",
+        text: "Hello"
+      };
+    });
+
+    it("Sets the posting variables", function() {
+      pp.pendingPost = false;
+      pp.postingHandler({name: "startPostingProcess", content: info}, sendResponse);
+      expect(pp.pendingPost).toBe(true);
+      expect(pp.pageURL).toBe(info.pageURL);
+      expect(pp.postingApplicationStartingValue).toBe("Hello");
+      expect(pp.targetNodeId).toBe("fakenode");
+    });
+    
+    it("Displays a Notification if there's an already pending post", function() {
+      spyOn(pp.pendingNotification, "show").and.callFake(function() { return; });
+      pp.pendingPost = true;
+      pp.postingHandler({name: "startPostingProcess", content: info}, sendResponse);
+      expect(pp.pendingNotification.show).toHaveBeenCalled();
+    });
+
+  });
+
+  describe("Cancels the posting process on tab closure -", function() {
+
+    beforeEach(function() {
+      spyOn(pp.postingApplicationTab, "close");
+      spyOn(pp, "endPostingProcess");
+    });
+
+    it("Posting Result tab is closed", function() {
+      pp.tabClosed({}, "resultTab");
+      expect(pp.postingApplicationTab.close).toHaveBeenCalled();
+      expect(pp.endPostingProcess).toHaveBeenCalled();
+    });
+    
+    it("Posting Application tab is closed", function() {
+      pp.tabClosed({}, "postingApplication");
+      expect(pp.postingApplicationTab.close).not.toHaveBeenCalled();
+      expect(pp.endPostingProcess).toHaveBeenCalled();
+    });
+    
+    it("One of the tabs is already closed", function() {
+      pp.postingResultTab = null;
+      pp.tabClosed({}, "resultTab");
+      expect(pp.postingApplicationTab.close).not.toHaveBeenCalled();
+      expect(pp.endPostingProcess).not.toHaveBeenCalled()
+    });
+
+  });
+
+  it("Clears posting process states/variables", function() {
+    pp.pendingPost = true;
+    pp.endPostingProcess();
     expect(pp.pendingPost).toBe(false);
-  });
-
-  it("Starts the posting process on request, notifies user on a pending post", function() {
-    spyOn(pp.pendingNotification, "show");
-    var info =  {
-      nodeId: "fakenode",
-      pageURL: "chrome://privly/content/test/test_loader.html",
-      text: "Hello",
-    };
-    pp.pendingPost = true;
-    pp.postingHandler(info);
-    expect(pp.pendingNotification.show).toHaveBeenCalled();
-    pp.pendingPost = false;
-    pp.postingHandler(info);
-    expect(pp.pendingPost).toBe(true);
-    expect(pp.targetNodeId).toBe("fakenode");
-  });
-
-  it("Cancels the posting process on tab closure", function() {
-    spyOn(pp.postingApplicationTab, "close");
-    pp.pendingPost = true;
-    pp.tabClosed({}, "resultTab");
-    expect(pp.postingApplicationTab).toBe(null);
     expect(pp.postingResultTab).toBe(null);
-    expect(pp.pendingPost).toBe(false);
-    pp.pendingPost = true;
-    pp.tabClosed({}, "postingApplication");
-    expect(pp.pendingPost).toBe(true);
+    expect(pp.postingApplicationTab).toBe(null);
+    expect(pp.postingApplicationStartingValue).toBe("");
   });
+
 });
