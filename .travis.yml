@@ -1,17 +1,20 @@
 language: node_js
 node_js:
   - "0.10"
-
+ 
 before_install:
   - "export DISPLAY=:99.0"
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16 -extension RANDR"
  
 before_script:
   - npm install jpm -g
+  - npm install istanbul -g
+  - npm install coveralls -g
   - cd ..
-  - wget "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/38.0/linux-x86_64/en-US/firefox-38.0.tar.bz2" -O firefox.tar.bz2
+  - wget "http://ftp.mozilla.org/pub/firefox/releases/39.0/linux-x86_64/en-US/firefox-39.0.tar.bz2" -O firefox.tar.bz2
   - tar -xjf firefox.tar.bz2 firefox
   - cd $TRAVIS_BUILD_DIR
- 
+  - export NODE_PATH="/home/travis/.nvm/v0.10.40/lib/node_modules/"
+
 script:
   - ./run_test.sh
