@@ -33,9 +33,7 @@ You can also install the xpi file in your Firefox browser --
 
 **Testing**
 
-To run the tests for your platform, add `--prefs test.json` to the jpm run command.
-
-More information about tests is given [here](https://github.com/privly/privly-jetpack/blob/master/chrome/content/test/README.md).
+Tests Documentation can be found [here](https://github.com/privly/privly-jetpack/blob/master/chrome/content/test/README.md).
 
 **More Information**
 
