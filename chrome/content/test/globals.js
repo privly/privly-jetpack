@@ -50,6 +50,8 @@ this.g = {
    * Closes the browser.
    */
   closeBrowser: function() {
+    // Comment the setTimeout if you don't want to close 
+    // the browser on tests completion.
     setTimeout(function() {
       var windows = g.windows.browserWindows;
       for (var i=0; i<windows.length; i++) {

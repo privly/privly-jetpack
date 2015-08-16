@@ -1,0 +1,5 @@
+.DS_Store
+*.xpi
+*~
+*.swp
+node_modules/

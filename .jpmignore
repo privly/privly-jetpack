@@ -15,9 +15,12 @@ __MACOSX*
 *.htaccess*
 *.template
 *.subtemplate
+node_modules/
 chrome/content/privly-applications/test/
 chrome/content/privly-applications/*/test/*
 # Uncomment these before packaging the extension for Mozilla
+#lib/xpcom.js
+#lib/test_runner.js
 #chrome/content/test/
 #chrome/content/vendor/
 chrome/content/privly-applications/vendor/build.py

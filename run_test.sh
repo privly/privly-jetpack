@@ -1,6 +1,13 @@
 # Script run on Travis CI
 # Runs the Jetpack extension tests
 
+# Check for dependencies
+if ! [ -f node_modules/istanbul/lib/cli.js ]; then
+  echo "You need to have 'istanbul' installed to run the tests."
+  echo "Run 'npm install istanbul'"
+  exit 1
+fi
+
 # Start node server
 node server.js &
 
@@ -19,7 +26,7 @@ current_dir+="/"
 sed -i "s:replace_with_path:$current_dir:g" test.json
 
 # Generate the instrumented files
-istanbul instrument lib/ -o lib/instrument/
+node_modules/istanbul/lib/cli.js instrument lib/ -o lib/instrument/
 
 # All instrumented files end with .in.js and are placed in lib/
 for f in lib/instrument/*; do
@@ -52,7 +59,7 @@ sed -i "s:$current_dir:replace_with_path:g" test.json
 
 # Don't post the coverage info to coveralls when run locally
 if ! [ -z "$TRAVIS" ]; then
-  cat coverage/lcov.info | coveralls
+  cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
 fi
 
 killall -9 node

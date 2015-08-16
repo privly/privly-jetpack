@@ -8,13 +8,12 @@ before_install:
  
 before_script:
   - npm install jpm -g
-  - npm install istanbul -g
-  - npm install coveralls -g
   - cd ..
   - wget "http://ftp.mozilla.org/pub/firefox/releases/39.0/linux-x86_64/en-US/firefox-39.0.tar.bz2" -O firefox.tar.bz2
   - tar -xjf firefox.tar.bz2 firefox
   - cd $TRAVIS_BUILD_DIR
-  - export NODE_PATH="/home/travis/.nvm/v0.10.40/lib/node_modules/"
+  - npm install istanbul
+  - npm install coveralls
 
 script:
   - ./run_test.sh
