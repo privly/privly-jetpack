@@ -10,8 +10,8 @@ In order to run the tests, you should have the following dependencies/packages i
     * [Install nodejs](http://askubuntu.com/questions/49390/how-do-i-install-the-latest-version-of-node-js)
     * [Difference between node and nodejs](http://stackoverflow.com/questions/20057790/what-are-the-differences-between-node-js-and-node)
 * Node.js Package Manager(npm) - `sudo apt-get install npm`
-* [istanbul](https://github.com/gotwarlost/istanbul) - `npm install -g istanbul`
-* [coveralls](https://github.com/nickmerwin/node-coveralls) - `npm install -g coveralls`
+* [istanbul](https://github.com/gotwarlost/istanbul) - Run `npm install istanbul` from the root of this repository.
+* [coveralls](https://github.com/nickmerwin/node-coveralls) - Run `npm install coveralls` from the root of this repository.
 
 ### How to run the unit tests ###
 ---
