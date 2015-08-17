@@ -15,6 +15,7 @@ __MACOSX*
 *.htaccess*
 *.template
 *.subtemplate
+coverage/
 node_modules/
 chrome/content/privly-applications/test/
 chrome/content/privly-applications/*/test/*
