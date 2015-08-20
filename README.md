@@ -9,6 +9,12 @@ Discussion of system concepts and high level processes are found in the
 
 **For more information** on developing for this repository, read [development.md](https://github.com/privly/privly-jetpack/blob/master/development.md) in this directory.
 
+## Contributors ##
+
+* [smcgregor](https://github.com/smcgregor)
+* [irdan](https://github.com/irdan)
+* [hitesh96db](https://github.com/hitesh96db)
+
 ## Contacts ##
 
 **Email**:

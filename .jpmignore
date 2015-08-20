@@ -28,3 +28,4 @@ chrome/content/privly-applications/vendor/build.py
 LICENSE
 chrome/content/privly-applications/MIT-LICENSE
 test.json
+server.js
