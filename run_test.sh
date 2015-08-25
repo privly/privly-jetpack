@@ -1,5 +1,4 @@
-# Script run on Travis CI
-# Runs the Jetpack extension tests
+# Runs the Jetpack extension unit tests. 
 
 # Check for dependencies
 if ! [ -f node_modules/istanbul/lib/cli.js ]; then
@@ -23,6 +22,8 @@ fi
 
 current_dir=`pwd`
 current_dir+="/"
+# Remove all changes made to test.json.
+git checkout test.json
 sed -i "s:replace_with_path:$current_dir:g" test.json
 
 # Generate the instrumented files
@@ -54,8 +55,8 @@ fi
 # Remove the instrumented files
 rm lib/*.in.js 
 rm -r lib/instrument/
-
-sed -i "s:$current_dir:replace_with_path:g" test.json
+# Remove all changes made to test.json.
+git checkout test.json
 
 # Don't post the coverage info to coveralls when run locally
 if ! [ -z "$TRAVIS" ]; then
