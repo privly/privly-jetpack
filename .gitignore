@@ -2,5 +2,5 @@
 *.xpi
 *~
 *.swp
-node_modules/
+node/node_modules/
 coverage/

@@ -16,7 +16,7 @@ __MACOSX*
 *.template
 *.subtemplate
 coverage/
-node_modules/
+node/node_modules/
 chrome/content/privly-applications/test/
 chrome/content/privly-applications/*/test/*
 # Uncomment these before packaging the extension for Mozilla

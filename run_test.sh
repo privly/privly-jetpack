@@ -1,14 +1,14 @@
 # Runs the Jetpack extension unit tests. 
 
 # Check for dependencies
-if ! [ -f node_modules/istanbul/lib/cli.js ]; then
+if ! [ -f node/node_modules/istanbul/lib/cli.js ]; then
   echo "You need to have 'istanbul' installed to run the tests."
-  echo "Run 'npm install istanbul'"
+  echo "Run 'npm install' inside the 'node' directory."
   exit 1
 fi
 
 # Start node server
-node server.js &
+node node/server.js &
 
 if [ -z "$TRAVIS" ]; then
   # Local Env
@@ -27,7 +27,7 @@ git checkout test.json
 sed -i "s:replace_with_path:$current_dir:g" test.json
 
 # Generate the instrumented files
-node_modules/istanbul/lib/cli.js instrument lib/ -o lib/instrument/
+node/node_modules/istanbul/lib/cli.js instrument lib/ -o lib/instrument/
 
 # All instrumented files end with .in.js and are placed in lib/
 for f in lib/instrument/*; do
@@ -60,7 +60,7 @@ git checkout test.json
 
 # Don't post the coverage info to coveralls when run locally
 if ! [ -z "$TRAVIS" ]; then
-  cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
+  cat coverage/lcov.info | node/node_modules/coveralls/bin/coveralls.js
 fi
 
 killall -9 node
