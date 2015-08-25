@@ -10,8 +10,10 @@ In order to run the tests, you should have the following dependencies/packages i
     * [Install nodejs](http://askubuntu.com/questions/49390/how-do-i-install-the-latest-version-of-node-js)
     * [Difference between node and nodejs](http://stackoverflow.com/questions/20057790/what-are-the-differences-between-node-js-and-node)
 * Node.js Package Manager(npm) - `sudo apt-get install npm`
-* [istanbul](https://github.com/gotwarlost/istanbul) - Run `npm install istanbul` from the root of this repository.
-* [coveralls](https://github.com/nickmerwin/node-coveralls) - Run `npm install coveralls` from the root of this repository.
+
+To install both `istanbul` and `coveralls`, run `npm install` in the `node/` directory.
+* [istanbul](https://github.com/gotwarlost/istanbul).
+* [coveralls](https://github.com/nickmerwin/node-coveralls).
 
 ### How to run the unit tests ###
 ---
@@ -81,6 +83,13 @@ That's it! This should get you started with writing tests for your module.
 
 If you want a module(say `lib/example.js`) to be covered for code coverage, you would have to do the following --
 
+* Define a `GLOBALS` variable in the module that stores the `this` object.
+```
+...
+var GLOBALS = this;
+...
+```
+
 * Add a `coverage` function in the module -
 ```
   ...
@@ -90,7 +99,7 @@ If you want a module(say `lib/example.js`) to be covered for code coverage, you 
   coverage: function() {
     var cv = require("./coverage_var.js").coverageVar;
     // You just need to pass the filename.
-    return eval(cv.generate("example.js"));
+    return GLOBALS[cv.generate("example.js")];
   },
   ...
 ```
@@ -112,7 +121,11 @@ If you want a module(say `lib/example.js`) to be covered for code coverage, you 
 
 `jpm run` launches an instance of Firefox with the extension installed. In order to open the `test_loader.html` page, we pass a `--prefs test.json` argument to the `jpm run` command. `test.json` contains key-value pairs that signals the extension to open up the test loader page. These key-value pairs in `test.json` are stored in the preferences service of the launched Firefox browser.
 
-The test loader page is an HTML page that loads the jasmine library scripts and test scripts. The page is loaded in a `chrome://privly/` URL and the scripts are run in a privileged environment. `globals.js` loads the extension commonjs modules into objects that are used by the test scripts. The extension modules are made available to `globals.js` via an XPCOM service defined in [lib/xpcom.js](https://github.com/privly/privly-jetpack/blob/master/lib/xpcom.js). The test scripts have access to the extension module objects via a global `g` namespace.
+The test loader page is an HTML page that loads the jasmine library scripts and test scripts. The page is loaded in a `chrome://privly/` URL and the scripts are run in a privileged environment. 
+
+In a Firefox privileged JS environment, we have access to an object called [Components](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components_object). This object allows us to use our XPCOM object/service defined in [lib/xpcom.js](https://github.com/privly/privly-jetpack/blob/master/lib/xpcom.js). The defined XPCOM object/service provides our extension modules to the test scripts.
+
+`globals.js` loads the extension CommonJS modules into objects under the global `g` namespace. The test scripts can then access the extension module objects via `g`.
 
 ### Code Coverage ###
 ---
@@ -142,4 +155,4 @@ Once all the tests have run, we loop over all the modules used in the tests and 
 
 #### Running a NodeJS Server that accepts the coverage info and sends it to Coveralls.io ####
 
-The server is run using Node.js. We've used Node.JS because this makes it easier to generate the reports from the coverage json and send those reports to Coverall.io. `istanbul` node [API](https://github.com/gotwarlost/istanbul#generate-reports-given-a-bunch-of-coverage-json-objects) generates the reports from the coverage json and [node-coveralls](https://github.com/nickmerwin/node-coveralls) sends those reports to Coveralls.io.
+The server is run using Node.js. We've used Node.JS because this makes it easier to generate the reports from the coverage json and send those reports to Coverall.io. `istanbul` node [API](https://github.com/gotwarlost/istanbul#generate-reports-given-a-bunch-of-coverage-json-objects) generates the reports from the coverage json and [node-coveralls](https://github.com/nickmerwin/node-coveralls) sends those reports to Coveralls.io. The server code can be found in `node/server.js`. The server only collects the coverage json and generates the report. `run_test.sh` uses `coveralls` to send those reports to Coveralls.io.
