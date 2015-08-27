@@ -1,0 +1,6 @@
+.DS_Store
+*.xpi
+*~
+*.swp
+node/node_modules/
+coverage/

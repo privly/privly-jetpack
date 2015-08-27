@@ -13,14 +13,9 @@
   var old_callback = terminalReporter.jasmineDone;
   terminalReporter.jasmineDone = function() {
     old_callback();
-    // Comment out the setTimeout if you don't want the browser 
-    // to close upon test completion.
-    setTimeout(function() {
-      var windows = g.windows.browserWindows;
-      for (var i=0; i<windows.length; i++) {
-        windows[i].close();
-      }
-    }, 1000);
+    // Collects all the coverage info and sends it to a nodejs server.
+    // the server generates a coverage report. 
+    g.reportCoverage();
   };
   jasmineEnv.addReporter(terminalReporter);
 })();

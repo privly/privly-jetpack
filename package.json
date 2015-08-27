@@ -3,8 +3,8 @@
   "name": "privly",
   "version": "0.5.0",
   "description": "Privly enables you to post and read private content through any website without those websites storing or reading your content. This extension is still experimental. For more information on Privly development, go to https://priv.ly/pages/develop",
-  "main": "lib/extension.js",
-  "author": "Sean McGregor, Daniel Reichert, Hitesh Sharma",
+  "main": "lib/background_script.js",
+  "author": "The Privly Foundation",
   "engines": {
     "firefox": ">=38.0a1",
     "fennec": ">=38.0a1"

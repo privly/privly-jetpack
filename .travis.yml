@@ -9,9 +9,12 @@ before_install:
 before_script:
   - npm install jpm -g
   - cd ..
-  - wget "ftp://ftp.mozilla.org/pub/firefox/releases/38.0b9/linux-x86_64/en-US/firefox-38.0b9.tar.bz2" -O firefox.tar.bz2
+  - wget "http://ftp.mozilla.org/pub/firefox/releases/39.0/linux-x86_64/en-US/firefox-39.0.tar.bz2" -O firefox.tar.bz2
   - tar -xjf firefox.tar.bz2 firefox
   - cd $TRAVIS_BUILD_DIR
- 
+  - cd node/
+  - npm install
+  - cd ..
+
 script:
   - ./run_test.sh
