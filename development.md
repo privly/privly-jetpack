@@ -31,10 +31,10 @@ You can also install the xpi file in your Firefox browser --
 * Click on the tools icon on the top right.
 * Select "Install Add-on From File" and provide the link to the generated xpi file.
 
-**Testing**
-
-Tests Documentation can be found [here](https://github.com/privly/privly-jetpack/blob/master/chrome/content/test/README.md).
-
 **More Information**
 
 To know more about jpm commands, visit the Mozilla [jpm](https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#Command_reference) guide.
+
+## Testing ##
+
+Tests Documentation can be found [here](https://github.com/privly/privly-jetpack/blob/master/chrome/content/test/README.md).
