@@ -4,7 +4,9 @@ Privly is a developing set of browser extensions for protecting content wherever
 
 ## Development Status ##
 
-**Alpha Version**
+**Deprecated Version**
+
+This version will be maintained until Mozilla releases its new extension framework, [WebExtenstions](https://blog.mozilla.org/addons/2015/08/21/the-future-of-developing-firefox-add-ons/).
 
 [![Build Status](https://travis-ci.org/privly/privly-jetpack.svg)](https://travis-ci.org/privly/privly-jetpack)
 
