@@ -34,10 +34,7 @@ There are also unit and Selenium tests, which are found in the privly-applicatio
 
 ## Developer Documentation ##
 
-Discussion of system concepts and high level processes are found in the 
-[central wiki](https://github.com/privly/privly-organization/wiki).
-
-**For more information** on developing for this repository, read [development.md](https://github.com/privly/privly-jetpack/blob/master/development.md) in this directory.
+Visit the [developer guide](https://priv.ly/pages/develop) for in depth development information. You should also read [development.md](https://github.com/privly/privly-jetpack/blob/master/development.md) in this directory.
 
 ## Resources ##
 
