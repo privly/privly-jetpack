@@ -23,6 +23,9 @@ before_script:
   - wget "http://ftp.mozilla.org/pub/firefox/releases/39.0/linux-x86_64/en-US/firefox-39.0.tar.bz2" -O firefox.tar.bz2
   - tar -xjf firefox.tar.bz2 firefox
   - cd $TRAVIS_BUILD_DIR
+  - cd node/
+  - npm install
+  - cd ..
   - cd privly-web
   - cp config/database.travis.yml config/database.yml
   - mysql -e 'create database privly_test'
