@@ -24,8 +24,6 @@ This extension currently supports:
 * **Augmented Browsing Toggle:** When you turn off Privly injection, the web page you are viewing will be restored to the un-augmented view.
 * **Testing Library:** The Jasmine testing library is integrated with the extension.
 
-*This extension is yet to be packaged.*
-
 ## Testing/Submitting Bugs ##
 
 Extension integration test cases are found at [test.privly.org](http://test.privly.org). If you have discovered a bug, only [open a public issue](https://github.com/privly/privly-jetpack/issues/new) on GitHub if it could not possibly be a security related bug. If the bug affects the security of the system, please send an email to privly@privly.org reporting the bug. We will then fix the bug and follow a process of responsible disclosure.
@@ -34,10 +32,7 @@ There are also unit and Selenium tests, which are found in the privly-applicatio
 
 ## Developer Documentation ##
 
-Discussion of system concepts and high level processes are found in the 
-[central wiki](https://github.com/privly/privly-organization/wiki).
-
-**For more information** on developing for this repository, read [development.md](https://github.com/privly/privly-jetpack/blob/master/development.md) in this directory.
+Visit the [developer guide](https://priv.ly/pages/develop) for in depth development information. You should also read [development.md](https://github.com/privly/privly-jetpack/blob/master/development.md) in this directory.
 
 ## Resources ##
 

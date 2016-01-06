@@ -1,11 +1,22 @@
-language: node_js
-node_js:
-  - "0.10"
- 
+language: ruby
+rvm:
+- 2.2.4
+env:
+  global:
+  - DB=mysql
+  - TRAVIS_LAUNCHES_SAUCE_CONNECT=true # Tell the karma file that it does not need to launch Sauce connect
+  - RAILS_ENV=development
+  - secure: pnDzle/Vqa3L286ZC8x8ImDsrXRShwOUnZLZlg5ioC5hb0NlWU7asP0/Bg2tQJRR30GQiMUpxA7VyZCYJes0ICidPqoQLM4XIChRe+m1LH7tIyETZX159p0nVEvUkQ3u1U6aERzEtMcj5LunQn5W2C/LAos2GWwfLgv9FQU01c7dpDrHg6e2fN5ZW7KsbhmDRRkwYGZm38r31zdHNDegJpNdF53rnhM53KCwIcp3KNn9DVEaQIlRWnrIMpb/KYAfQSuiWC7CCyi/qWKrxeAaS5ATpl5+bF6AvLqVlzJPhUK2h+1snGddybbwDZpWl5gHMb51VmDhjFZ5f1Qf1sTM9BFvgS3opnzzJJWaeM+QQTATX3p+CeURVeY5EY4W7ItA8E3vjfIqWQwAWXeDmLrIjumdBeSqAbjM0PqXOBRF7KFoYNljunV3v+MkeBheDZbGZi5b6lftUHCPcJQaClEggITioQSFK/YyNgtqmo5RyYaozVb+VKdg6ZXVukFWJPQcxv1pBGpZOGdyOtbfvvQeOTTriE0zrXNWv/gCeR2IfTYLlhYYIc6mN6Wyy1ZVKIg4nucizPX0snGjF+NJ1wzylnlLY5ozhD56MnFKiL+R5bcm9EZfIL0KNRZvGoSRE5a5bPPhVvNNBzf+lPhD98UsxZH9UhjU9DWGg+EBXR2gfFo=#SAUCE_USERNAME=smcgregor(smcgregor/privly-jetpack)
+  - secure: JGHwtT4r0tYisZ9s5NHzOOGMn8MUfyFOuknpmewHpah+SVEoArEpwpPJmFpyE5AcyPl2Cg/SrHCM9cT1sxwrWWEePxeIWzF54a5j+4QoTj417aLIj16iMqlUh7nUgavcA3G6GWCuUxGnccJuARztKSaP8J9QYM8ubisgb2WWwNC6bS7mzg6ZroznirzNtMtzx+ogrd5e/D2RTeubtKwVijxIwWcieQ0RHRbrA68JBc62ozAhEeyyVMw+CNvNen0VoGqUBvrNROpyujXwxCRjw3UQgh6x+rGYXHGIS7x/2g4d5UZv/Cch4V5IzjtMvlHrKb3xlQ3BTpbmD4enI7/UOFXz9xLGQxF9lf+n50rTwewdbXA4WH2Xca4S51ToIEg4CZubto2yeB6G8xg9YEw0+i79mOsnQ8A2IfpjWwIVRN6RJfEeSkAVFNEBUo7PYQj689/x0bYNDswgjxke4+q4gYO8ZTuodu6p39AzWYZ+Il+SbruZ7C54SQLIsZyT7UnnRgPz8bXUAYnLEZ5ca7d4tgjvKYI8fDI/zy0kHvhxHOOaXNJg1vbGhdQMxAqyCmyFTZf+hSwVCHrDvVSZBylyHEYF4DTdsYcWW5PNiNeaCJLqYm5dgP/Wv7jiz4GtMnRFercRzrS/WDKHNeVZHfaXnzLMu6lqftm0+fa8VOEa4iY=#SAUCE_ACCESS_KEY=*****(smcgregor/privly-jetpack)
+  - secure: "JSLv0NcutkRFvss0APhX18RoTXmjS+L99e5GQl3uzstf+JOdBGLbhM7lrEXDjJs9guDDCKgW/oMwmQVhSHz+jUf0NJbxM3tBhHPPz4I9l5r6oMoBnRTaABsWSxts8PrAWjhFPIavCdJWtmCe98wgiN3RyKgKmqJ6yuyv9Eb+3xD3BVUvJKjaQmSPIgUnU3HvxPbyFPYbZiuIAX3Mb5RgYo7Pxc8EfwHY2nva8uWOnSoGJJKcCoJuv4BYGwXDLqbI9dWzoyYJ81alqxdMhJyDDMpoyQwvIOjJi03WOAgWgQo2H8Iwes6Hc5u9jfwrdm/eLsxqX2BGRkYudMqnMb9+Nit6kHNNea39Ls7kZufnRw9vcACFp9L28fmI6kk/8RVb1OcEtlAIR2M5344ZzLSbDfr/WfXhmK+vW1LBPSy1NN3Jg+XGVrcEPz/m9lGXaubDnWzeHEd1WGqp78iBCFmybcYwuPlegLniWXfNgo05Q3jBiYUSYZ0VlvAqMCzsUMtyty0xEJg6dURiMTGIW6vJ5XGfKRQm/PjZ6bb+ER43ZoJ51EDiEunPYHMNF6WlY1LPgVpeUE5E5kngkPo/RMp1O74k8Sssl0UWL/Pu7vbFAWhzZodyXZUMnQXax34/lkfCrKK3LHoAsOr9VFRkuXd5tVi2YXhnk2SZpnQ4UI4dTT4="#SAUCE_URL="http://smcgregor:********-****-****-****-************@ondemand.saucelabs.com:80/wd/hub"(smcgregor/privly-jetpack)
+  - secure: OWGod/q7wxT0latxSfKHBbST2MK/qkzmvDW6iX+QIwTm7SK3HsVK9PLLvtMCc8Q6vtZlcXHriv8fuCuAwrL9sqSpSncQRVdqU/vqnKb8/JRa+bY6DjjiwnqESsKmThEXEGei7jEsKpbUEdluJetmNRdo9XcVryi6J/6IH7Zxl+U=#SAUCE_USERNAME=privly(privly/privly-jetpack)
+  - secure: CsXQukttuNXLHElDgdoqtW+MFkfspLgRUXB0SgH7nI/QgktYY1sl4VXbKHQ3WOEYh7Yc8OOOk2dkg3v9Rs9N0/000X2zKgr6FAmFtH0jNUmfoqbeVPhtw6AQbCK5gtditHtngZolIhVypZhzpwZ1feuoRCsdaLnTL80eQoZvxsE=#SAUCE_ACCESS_KEY=*****(privly/privly-jetpack)
+  - secure: "YznBGaK4uT/nsqo1IFoAZDqVfLURNfnp0DwZe6LbQcEw2fcVB0ZmnAgg02Ueu+13uBxMwHGpLwqLXDn1oXYBf/l6UuiuFyOk1aN4VuATaHlYJeiQOzw20s7RbAvINZoU2FrVX6zAwbszfx2uLoSiJP1LmoaJNYOekxmR7bBOQoM="#SAUCE_URL="http://privly:********-****-****-****-************@ondemand.saucelabs.com:80/wd/hub"(privly/privly-jetpack)
 before_install:
   - "export DISPLAY=:99.0"
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16 -extension RANDR"
- 
+  - git submodule update --init --recursive
+  - git clone https://github.com/privly/privly-web.git # clone the webserver
 before_script:
   - npm install jpm -g
   - cd ..
@@ -15,6 +26,23 @@ before_script:
   - cd node/
   - npm install
   - cd ..
-
+  - cd privly-web
+  - cp config/database.travis.yml config/database.yml
+  - mysql -e 'create database privly_test'
+  - bundle install #Installs the required gems
+  - rake db:create #Creates the Database
+  - rake db:schema:load #Loads the Scheme
+  - rake db:seed #Seeds the DB
+  - "bundle exec rails server -p 3000 &"
+  - cd ../chrome/content/privly-applications
+  - sudo pip install -r requirements.txt
+  - python build.py --platform chrome
+  - cd test
+  - bundle install #Installs gems required for selenium testing
+  - cd selenium
 script:
+  - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ruby run_all.rb -p sauce_firefox_extension -r experimental -c http://localhost:3000; fi" # Don't run on pull requests
+  - cd $TRAVIS_BUILD_DIR
   - ./run_test.sh
+addons:
+  sauce_connect: true
