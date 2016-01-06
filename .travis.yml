@@ -23,6 +23,9 @@ before_script:
   - wget "http://ftp.mozilla.org/pub/firefox/releases/39.0/linux-x86_64/en-US/firefox-39.0.tar.bz2" -O firefox.tar.bz2
   - tar -xjf firefox.tar.bz2 firefox
   - cd $TRAVIS_BUILD_DIR
+  - cd node/
+  - npm install
+  - cd ..
   - cd privly-web
   - cp config/database.travis.yml config/database.yml
   - mysql -e 'create database privly_test'
@@ -33,8 +36,10 @@ before_script:
   - "bundle exec rails server -p 3000 &"
   - cd ../chrome/content/privly-applications
   - sudo pip install -r requirements.txt
-  - python build.py --platform firefox
-  - cd test/selenium
+  - python build.py --platform chrome
+  - cd test
+  - bundle install #Installs gems required for selenium testing
+  - cd selenium
 script:
   - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ruby run_all.rb -p sauce_firefox_extension -r experimental -c http://localhost:3000; fi" # Don't run on pull requests
   - cd $TRAVIS_BUILD_DIR

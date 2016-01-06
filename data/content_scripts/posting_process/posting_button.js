@@ -27,7 +27,7 @@ postingProcess.addPrivlyButton = function() {
   // The button is represented by this span element
   var span = document.createElement("span");
 
-  span.style.background = "url(https://raw.githubusercontent.com/privly/privly-jetpack/master/data/skin/logo_16.png) no-repeat";
+  span.style.background = "url(chrome://privly-icon/content/icon_16.png) no-repeat";
   span.style.width = "16px";
   span.style.height = "16px";
   span.style.display = "block";

@@ -3,6 +3,8 @@
 __MACOSX*
 *.sh
 *.xpi
+*.py
+*.zip
 *.DS_Store
 *~
 .jpmignore
@@ -16,16 +18,21 @@ __MACOSX*
 *.template
 *.subtemplate
 coverage/
-node/node_modules/
 chrome/content/privly-applications/test/
 chrome/content/privly-applications/*/test/*
+chrome/content/privly-applications/*/js/tests/
+chrome/content/privly-applications/ZeroBin/
 # Uncomment these before packaging the extension for Mozilla
 #lib/xpcom.js
 #lib/test_runner.js
 #chrome/content/test/
 #chrome/content/vendor/
+#node/
+#data/content_scripts/test/
+#lib/coverage_var.js
 chrome/content/privly-applications/vendor/build.py
 LICENSE
 chrome/content/privly-applications/MIT-LICENSE
 test.json
 server.js
+Dockerfile
