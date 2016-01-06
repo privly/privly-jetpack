@@ -29,3 +29,4 @@ LICENSE
 chrome/content/privly-applications/MIT-LICENSE
 test.json
 server.js
+Dockerfile
