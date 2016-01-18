@@ -13,7 +13,7 @@ if (postingProcess === undefined) {
 
 /**
  * Dispatches a mouse "click" event on the specified target node.
- * 
+ *
  * @param {Object} target DOM node.
  */
 postingProcess.dispatchClickEvent = function(target) {
@@ -23,10 +23,10 @@ postingProcess.dispatchClickEvent = function(target) {
     view: document.defaultView,
   });
   target.dispatchEvent(evt);
-}
+};
 
 /**
- * Handles the receipt of Privly URL messages from the extension for the addition 
+ * Handles the receipt of Privly URL messages from the extension for the addition
  * to the host page.
  *
  * @param {Object} message Message containing Privly url to be posted in the host page.
@@ -61,6 +61,6 @@ postingProcess.postPrivlyURL = function(message, sendResponse) {
       }
     }
   }
-}
+};
 
 Privly.message.addListener(postingProcess.postPrivlyURL);

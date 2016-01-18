@@ -1,5 +1,5 @@
 /**
- * @fileOverview This script is injected in popup.html and is used to 
+ * @fileOverview This script is injected in popup.html and is used to
  * communicate with the add-on code.
  */
 
@@ -10,7 +10,7 @@ var popup = {};
 
 /* Handles the receipt of "extensionMode" message from the add-on.
  * Changes the label in popup.html accordingly.
- * 
+ *
  * @param {String} message Message from the add-on.
  * @param {Function} sendResponse Function used to send a response/message back.
  */
@@ -27,7 +27,7 @@ popup.toggleLabel = function(message, sendResponse) {
       extMode.innerHTML = "Off";
     }
   }
-}
+};
 
 /**
  * Handles click events on the popup menu. Sends a message to the extension,
@@ -57,7 +57,7 @@ popup.clickHandler = function(event) {
       }
     }
   }
-}
+};
 
 Privly.message.addListener(popup.toggleLabel);
 window.addEventListener("click", popup.clickHandler, false);

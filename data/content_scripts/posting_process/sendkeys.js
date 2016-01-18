@@ -39,10 +39,12 @@ var canNormalize = n.firstChild.length == 3;
 
 bililiteRange = function(el, debug){
     var ret;
+    var trackSelection;
+
     if (debug){
         ret = new NothingRange(); // Easier to force it to use the no-selection type than to try to find an old browser
     }else if (window.getSelection && el.setSelectionRange){
-        // Standards. Element is an input or textarea 
+        // Standards. Element is an input or textarea
         // note that some input elements do not allow selections
         try{
             el.selectionStart; // even getting the selection in such an element will throw
@@ -86,7 +88,7 @@ bililiteRange = function(el, debug){
     // this._bounds directly
     if (!('bililiteRangeSelection' in el)){
         // start tracking the selection
-        function trackSelection(evt){
+        trackSelection = function (evt){
             if (evt && evt.which == 9){
                 // do tabs my way, by restoring the selection
                 // there's a flash of the browser's selection, but I don't see a way of avoiding that
@@ -94,7 +96,7 @@ bililiteRange = function(el, debug){
             }else{
                 el.bililiteRangeSelection = ret._nativeSelection();
             }
-        }
+        };
         trackSelection();
         // only IE does this right and allows us to grab the selection before blurring
         if ('onbeforedeactivate' in el){
@@ -113,10 +115,10 @@ bililiteRange = function(el, debug){
         });
     }
     if (!('oninput' in el)){
-        // give IE8 a chance. Note that this still fails in IE11, which has has oninput on contenteditable elements but does not 
+        // give IE8 a chance. Note that this still fails in IE11, which has has oninput on contenteditable elements but does not
         // dispatch input events. See http://connect.microsoft.com/IE/feedback/details/794285/ie10-11-input-event-does-not-fire-on-div-with-contenteditable-set
         // TODO: revisit this when I have IE11 running on my development machine
-        var inputhack = function() {ret.dispatch({type: 'input'}) };
+        var inputhack = function() {ret.dispatch({type: 'input'}); };
         ret.listen('keyup', inputhack);
         ret.listen('cut', inputhack);
         ret.listen('paste', inputhack);
@@ -124,7 +126,7 @@ bililiteRange = function(el, debug){
         el.oninput = 'patched';
     }
     return ret;
-}
+};
 
 function textProp(el){
     // returns the property that contains the text of the element
@@ -249,7 +251,7 @@ Range.prototype = {
             return this._el[this._textProp].replace(/\r/g, ''); // need to correct for IE's CrLf weirdness
         }
     },
-    element: function() { return this._el },
+    element: function() { return this._el; },
     // includes a quickie polyfill for CustomEvent for IE that isn't perfect but works for me
     // IE10 allows custom events but not "new CustomEvent"; have to do it the old-fashioned way
     dispatch: function(opts){
@@ -303,14 +305,14 @@ Range.prototype = {
 // allow extensions ala jQuery
 bililiteRange.fn = Range.prototype; // to allow monkey patching
 bililiteRange.extend = function(fns){
-    for (fn in fns) Range.prototype[fn] = fns[fn];
+    for (var fn in fns) Range.prototype[fn] = fns[fn];
 };
 
 //bounds functions
 bililiteRange.bounds = {
-    all: function() { return [0, this.length()] },
-    start: function () { return [0,0] },
-    end: function () { return [this.length(), this.length()] },
+    all: function() { return [0, this.length()]; },
+    start: function () { return [0,0]; },
+    end: function () { return [this.length(), this.length()]; },
     selection: function(){
         if (this._el === this._doc.activeElement){
             this.bounds ('all'); // first select the whole thing for constraining
@@ -397,7 +399,7 @@ IERange.prototype._nativeRange = function (bounds){
         }
         if (bounds[0] > 0) rng.moveStart('character', bounds[0]);
     }
-    return rng;                 
+    return rng;
 };
 IERange.prototype._nativeSelect = function (rng){
     rng.select();
@@ -434,7 +436,7 @@ IERange.prototype._nativeEOL = function(){
 IERange.prototype._nativeTop = function(rng){
     var startrng = this._nativeRange([0,0]);
     return rng.boundingTop - startrng.boundingTop;
-}
+};
 IERange.prototype._nativeWrap = function(n, rng) {
     // hacky to use string manipulation but I don't see another way to do it.
     var div = document.createElement('div');
@@ -498,8 +500,8 @@ InputRange.prototype._nativeTop = function(rng){
     top -= clone.scrollHeight;
     clone.parentNode.removeChild(clone);
     return top;
-}
-InputRange.prototype._nativeWrap = function() {throw new Error("Cannot wrap in a text element")};
+};
+InputRange.prototype._nativeWrap = function() {throw new Error("Cannot wrap in a text element");};
 
 function W3CRange(){}
 W3CRange.prototype = new Range();
@@ -511,7 +513,7 @@ W3CRange.prototype._nativeRange = function (bounds){
         rng.collapse (true);
         w3cmoveBoundary (rng, bounds[1]-bounds[0], false, this._el);
     }
-    return rng;                 
+    return rng;
 };
 W3CRange.prototype._nativeSelect = function (rng){
     this._win.getSelection().removeAllRanges();
@@ -520,13 +522,13 @@ W3CRange.prototype._nativeSelect = function (rng){
 W3CRange.prototype._nativeSelection = function (){
     // returns [start, end] for the selection constrained to be in element
     var rng = this._nativeRange(); // range of the element to constrain to
-    if (this._win.getSelection().rangeCount == 0) return [this.length(), this.length()]; // append to the end
+    if (this._win.getSelection().rangeCount === 0) return [this.length(), this.length()]; // append to the end
     var sel = this._win.getSelection().getRangeAt(0);
     return [
         w3cstart(sel, rng),
         w3cend (sel, rng)
     ];
-    }
+  };
 W3CRange.prototype._nativeGetText = function (rng){
     return String.prototype.slice.apply(this._el.textContent, this.bounds());
     // return rng.toString(); // this fails in IE11 since it insists on inserting \r's before \n's in Ranges. node.textContent works as expected
@@ -546,16 +548,17 @@ W3CRange.prototype._nativeEOL = function(){
     rng.collapse (false);
 };
 W3CRange.prototype._nativeTop = function(rng){
-    if (this.length == 0) return 0; // no text, no scrolling
-    if (rng.toString() == ''){
-        var textnode = this._doc.createTextNode('X');
+    var textnode;
+    if (this.length === 0) return 0; // no text, no scrolling
+    if (rng.toString() === ''){
+        textnode = this._doc.createTextNode('X');
         rng.insertNode (textnode);
     }
     var startrng = this._nativeRange([0,1]);
     var top = rng.getBoundingClientRect().top - startrng.getBoundingClientRect().top;
     if (textnode) textnode.parentNode.removeChild(textnode);
     return top;
-}
+};
 W3CRange.prototype._nativeWrap = function(n, rng) {
     rng.surroundContents(n);
 };
@@ -592,7 +595,7 @@ function w3cmoveBoundary (rng, n, bStart, el){
                 // special case: if we end next to a <br>, include that node.
                 if (n == length){
                     // skip past zero-length text nodes
-                    for (var next = nextnode (node, el); next && next.nodeType==3 && next.nodeValue.length == 0; next = nextnode(next, el)){
+                    for (var next = nextnode (node, el); next && next.nodeType==3 && next.nodeValue.length === 0; next = nextnode(next, el)){
                         rng[bStart ? 'setStartAfter' : 'setEndAfter'](next);
                     }
                     if (next && next.nodeType == 1 && next.nodeName == "BR") rng[bStart ? 'setStartAfter' : 'setEndAfter'](next);
@@ -611,11 +614,11 @@ var     START_TO_END                   = 1;
 var     END_TO_END                     = 2;
 var     END_TO_START                   = 3;
 // from the Mozilla documentation, for range.compareBoundaryPoints(how, sourceRange)
-// -1, 0, or 1, indicating whether the corresponding boundary-point of range is respectively before, equal to, or after the corresponding boundary-point of sourceRange. 
+// -1, 0, or 1, indicating whether the corresponding boundary-point of range is respectively before, equal to, or after the corresponding boundary-point of sourceRange.
     // * Range.END_TO_END compares the end boundary-point of sourceRange to the end boundary-point of range.
     // * Range.END_TO_START compares the end boundary-point of sourceRange to the start boundary-point of range.
     // * Range.START_TO_END compares the start boundary-point of sourceRange to the end boundary-point of range.
-    // * Range.START_TO_START compares the start boundary-point of sourceRange to the start boundary-point of range. 
+    // * Range.START_TO_START compares the start boundary-point of sourceRange to the start boundary-point of range.
 function w3cstart(rng, constraint){
     if (rng.compareBoundaryPoints (START_TO_START, constraint) <= 0) return 0; // at or before the beginning
     if (rng.compareBoundaryPoints (END_TO_START, constraint) >= 0) return constraint.toString().length;
@@ -654,22 +657,25 @@ NothingRange.prototype._nativeEOL = function(){
 NothingRange.prototype._nativeTop = function(){
     return 0;
 };
-NothingRange.prototype._nativeWrap = function() {throw new Error("Wrapping not implemented")};
+NothingRange.prototype._nativeWrap = function() {throw new Error("Wrapping not implemented");};
 
 
 // data for elements, similar to jQuery data, but allows for monitoring with custom events
 var data = []; // to avoid attaching javascript objects to DOM elements, to avoid memory leaks
 bililiteRange.fn.data = function(){
     var index = this.element().bililiteRangeData;
-    if (index == undefined){
+    if (index === undefined){
         index = this.element().bililiteRangeData = data.length;
         data[index] = new Data(this);
     }
     return data[index];
-}
+};
+
+var Data;
+
 try {
     Object.defineProperty({},'foo',{}); // IE8 will throw an error
-    var Data = function(rng) {
+    Data = function(rng) {
         // we use JSON.stringify to display the data values. To make some of those non-enumerable, we have to use properties
         Object.defineProperty(this, 'values', {
             value: {}
@@ -692,7 +698,7 @@ try {
                 return ret;
             }
         });
-    }
+    };
 
     Data.prototype = {};
     Object.defineProperty(Data.prototype, 'values', {
@@ -701,7 +707,7 @@ try {
     Object.defineProperty(Data.prototype, 'monitored', {
         value: {}
     });
-    
+
     bililiteRange.data = function (name, newdesc){
         newdesc = newdesc || {};
         var desc = Object.getOwnPropertyDescriptor(Data.prototype, name) || {};
@@ -721,16 +727,16 @@ try {
                 bubbles: true,
                 detail: {name: name, value: value}
             });
-        }
+        };
         Object.defineProperty(Data.prototype, name, desc);
-    }
+    };
 }catch(err){
     // if we can't set object property properties, just use old-fashioned properties
-  Data = function(rng){ this.sourceRange = rng };
+  Data = function(rng){ this.sourceRange = rng; };
     Data.prototype = {};
     bililiteRange.data = function(name, newdesc){
         if ('value' in newdesc) Data.prototype[name] = newdesc.value;
-    }
+    };
 }
 
 })();

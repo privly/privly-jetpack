@@ -13,7 +13,7 @@ if (postingProcess === undefined) {
 }
 
 /**
- * Called when the Context Menu Item is clicked. This sends a message to the 
+ * Called when the Context Menu Item is clicked. This sends a message to the
  * extension in order to start the posting process.
  *
  * @param {Object} node DOM node that the user context-clicked to invoke the menu.
@@ -36,6 +36,6 @@ postingProcess.menuClickHandler = function(node, data) {
     pageURL: window.location.href,
   };
   self.postMessage({name: "startPostingProcess", content: info});
-}
+};
 
 self.on("click", postingProcess.menuClickHandler);
