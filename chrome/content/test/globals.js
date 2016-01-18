@@ -35,7 +35,7 @@ this.g = {
    * Privly UI Popup Button
    */
   popupButton: PrivlyXPCOM.getPrivlyUI().popupButton,
- 
+
   /**
    * Privly Posting Process
    */
@@ -50,7 +50,7 @@ this.g = {
    * Closes the browser.
    */
   closeBrowser: function() {
-    // Comment the setTimeout if you don't want to close 
+    // Comment the setTimeout if you don't want to close
     // the browser on tests completion.
     setTimeout(function() {
       var windows = g.windows.browserWindows;
@@ -59,10 +59,10 @@ this.g = {
       }
     }, 2000);
   },
-    
+
   /**
-   * Collects the coverage info from every tested module and sends it to 
-   * a nodejs server. The server then uses the coverage info to generate the 
+   * Collects the coverage info from every tested module and sends it to
+   * a nodejs server. The server then uses the coverage info to generate the
    * reports, which is then sent to Coveralls.io.
    */
   reportCoverage: function() {
@@ -71,11 +71,12 @@ this.g = {
     // Collect coverage info from every file
     for (var property in g) {
       if (g.hasOwnProperty(property)) {
+        var info;
         try {
-          var info = g[property].coverage();
+          info = g[property].coverage();
         } catch (ignore) {}
-        if (typeof info !== "undefined") {
-          window.__coverage__[info["path"]] = info;
+          if (typeof info !== "undefined") {
+            window.__coverage__[info.path] = info;
         }
       }
     }

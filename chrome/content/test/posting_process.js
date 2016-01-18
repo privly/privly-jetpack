@@ -27,9 +27,9 @@ describe("Posting Process Suite", function() {
     spyOn(Privly.message.currentAdapter, "addWorker").
       and.callFake(function() { return; });
     spyOn(pp, "notificationScript");
-    
+
     pp.menuSetup(g.uiButton, Privly);
-    
+
     expect(pp.notificationScript.calls.count()).toBe(2);
     expect(Privly.message.addListener).toHaveBeenCalled();
     expect(Privly.message.currentAdapter.addWorker).toHaveBeenCalled();
@@ -65,7 +65,7 @@ describe("Posting Process Suite", function() {
       pp.sendBtnStatus({name: "requestBtnStatus", content: "foobar"}, sendResponse);
       expect(sendResponse).toHaveBeenCalledWith({name: "privlyBtnStatus", content: "unchecked"});
     });
-    
+
     it("Privly button is disabled", function() {
       // Disable privly button
       Privly.options.setPrivlyButtonEnabled(false);
@@ -82,7 +82,7 @@ describe("Posting Process Suite", function() {
   });
 
   describe("Responds to post status -", function() {
-    
+
     it("Closes privly app window on successful post", function() {
       spyOn(pp, "endPostingProcess");
       spyOn(pp.postingApplicationTab, "close");
@@ -117,7 +117,7 @@ describe("Posting Process Suite", function() {
     pp.receivePrivlyURL({name: "setPrivlyURL", content: privlyURL}, sendResponse);
     expect(pp.postingResultTab.activate).toHaveBeenCalled();
     expect(Privly.message.messageContentScripts).toHaveBeenCalledWith({
-      name: "postURL", 
+      name: "postURL",
       content: {privlyURL: privlyURL, nodeId: "fakenode", pageURL: "https://page.url"}
     }, true);
   });
@@ -142,7 +142,7 @@ describe("Posting Process Suite", function() {
       expect(pp.postingApplicationStartingValue).toBe("Hello");
       expect(pp.targetNodeId).toBe("fakenode");
     });
-    
+
     it("Displays a Notification if there's an already pending post", function() {
       spyOn(pp.pendingNotification, "show").and.callFake(function() { return; });
       pp.pendingPost = true;
@@ -164,18 +164,18 @@ describe("Posting Process Suite", function() {
       expect(pp.postingApplicationTab.close).toHaveBeenCalled();
       expect(pp.endPostingProcess).toHaveBeenCalled();
     });
-    
+
     it("Posting Application tab is closed", function() {
       pp.tabClosed({}, "postingApplication");
       expect(pp.postingApplicationTab.close).not.toHaveBeenCalled();
       expect(pp.endPostingProcess).toHaveBeenCalled();
     });
-    
+
     it("One of the tabs is already closed", function() {
       pp.postingResultTab = null;
       pp.tabClosed({}, "resultTab");
       expect(pp.postingApplicationTab.close).not.toHaveBeenCalled();
-      expect(pp.endPostingProcess).not.toHaveBeenCalled()
+      expect(pp.endPostingProcess).not.toHaveBeenCalled();
     });
 
   });

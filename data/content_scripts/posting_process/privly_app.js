@@ -14,9 +14,9 @@ if (postingProcess === undefined) {
 
 /**
  * Responds to the intial content request from Privly Application and also handles
- * the receipt of initial content from the extension. This content is then sent to 
+ * the receipt of initial content from the extension. This content is then sent to
  * the privly application.
- * 
+ *
  * @param {Object} message Message sent by Privly application.
  * @param {Function} sendResponse Function used to send a response/message back.
  */
@@ -35,12 +35,12 @@ postingProcess.initialContentHandler = function(message, sendResponse) {
       });
     });
   }
-}
+};
 
 /**
- * Handles the receipt of Privly URL from the Privly Application. Forwards the URL to 
+ * Handles the receipt of Privly URL from the Privly Application. Forwards the URL to
  * the extension.
- * 
+ *
  * @param {Object} message Message sent by Privly application.
  * @param {Function} sendResponse Function used to send a response/message back.
  */
@@ -52,7 +52,7 @@ postingProcess.receivePrivlyURL = function(message, sendResponse) {
       content: message.privlyUrl,
     });
   }
-}
+};
 
 Privly.message.addListener(postingProcess.initialContentHandler);
 Privly.message.addListener(postingProcess.receivePrivlyURL);

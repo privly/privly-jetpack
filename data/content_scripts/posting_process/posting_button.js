@@ -141,10 +141,10 @@ postingProcess.addPrivlyButton = function() {
       Privly.message.messageExtension({
         name: "startPostingProcess",
         content: info,
-      })
+      });
     }
   });
-}
+};
 
 /**
  * Handles the receipt of Privly button status from the extension. Depending on the
@@ -158,7 +158,7 @@ postingProcess.buttonStatus = function(response) {
       postingProcess.addPrivlyButton();
     }
   }
-}
+};
 
 // Check if the posting button has been enabled?
 // i.e, if the disable option is unchecked.

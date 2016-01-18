@@ -1,6 +1,6 @@
 /**
  * @fileOverview This script is injected in
- * "chrome://privly/content/privly-applications/Pages/MessageTest.html" 
+ * "chrome://privly/content/privly-applications/Pages/MessageTest.html"
  * and is used to forward messages to the extension.
  *
  */
@@ -27,5 +27,5 @@ var test = {
       });
     }
   }
-}
+};
 Privly.message.addListener(test.messageHandler);

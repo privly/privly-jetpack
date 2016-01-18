@@ -8,7 +8,7 @@ describe("Privly UI Suite", function() {
   var pb = g.popupButton,
       Privly = g.Privly,
       sendResponse;
-    
+
   beforeEach(function() {
     sendResponse = jasmine.createSpy("sendResponse");
   });
@@ -27,7 +27,7 @@ describe("Privly UI Suite", function() {
   });
 
   describe("Mock Popup button", function() {
-    
+
     beforeEach(function() {
       // Fake the Jetpack button and panel objects created during setup.
       // pb.button fakes require("sdk/ui/button/toggle").ToggleButton()
@@ -35,7 +35,7 @@ describe("Privly UI Suite", function() {
         label: pb.ACTIVE.label,
         state: function(obj, states) { return; }
       };
-      // pb.panel fakes require("sdk/panel").Panel()      
+      // pb.panel fakes require("sdk/panel").Panel()
       pb.panel = {
         show: function(params) { return; }
       };
@@ -52,7 +52,7 @@ describe("Privly UI Suite", function() {
     });
 
     it("Responds to popup menu item clicked", function() {
-      spyOn(Privly.options, "getWhitelistRegExp").and.callFake(function() { 
+      spyOn(Privly.options, "getWhitelistRegExp").and.callFake(function() {
         return "whitelist";
       });
       spyOn(pb, "getButtonState").and.callFake(function() { return "inactive"; });
@@ -64,7 +64,7 @@ describe("Privly UI Suite", function() {
     });
 
     describe("Toggles the Injection", function() {
-    
+
       it("Deactivates Injection", function() {
         // "Active" button
         pb.button.label = pb.ACTIVE.label;
@@ -72,7 +72,7 @@ describe("Privly UI Suite", function() {
         expect(Privly.options.isInjectionEnabled()).toBe(false);
         expect(pb.button.state).toHaveBeenCalledWith(pb.button, pb.INACTIVE);
       });
-    
+
       it("Activates Injection", function() {
         // "Inactive" button
         pb.button.label = pb.INACTIVE.label;
@@ -84,9 +84,9 @@ describe("Privly UI Suite", function() {
     });
 
     describe("Responds to clicks on Popup button", function() {
-     
+
       beforeEach(function() {
-        spyOn(pb, "getButtonState").and.callFake(function() { return "active" });
+        spyOn(pb, "getButtonState").and.callFake(function() { return "active"; });
         spyOn(Privly.message, "messageContentScripts").and.callFake(function() {
           // Fake promise
           return { then: function() {} };
@@ -102,13 +102,13 @@ describe("Privly UI Suite", function() {
           name: "extensionMode",
           content: "active"
         });
-      }); 
+      });
 
       it("Does not respond when button is unchecked", function() {
         pb.handleChange({checked: false});
         expect(pb.panel.show).not.toHaveBeenCalled();
         expect(Privly.message.messageContentScripts).not.toHaveBeenCalled();
-      });    
+      });
     });
 
   });

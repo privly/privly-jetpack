@@ -323,8 +323,8 @@ var privly = {
       elements.forEach(
         function(a){
           // Optimization
-          if (  a.textContent.indexOf("privlyInject1") <= 0 
-            || ! privly.correctIndirection.testAndCopyOver(a, a.textContent) ) {
+          if (  a.textContent.indexOf("privlyInject1") <= 0 ||
+            ! privly.correctIndirection.testAndCopyOver(a, a.textContent) ) {
             notUpdated.push(a);
           }
       });
@@ -406,7 +406,7 @@ var privly = {
        };
 
     //Styling and display attributes
-    for(var key in attrs) 
+    for(var key in attrs)
     {
       iFrame.setAttribute(key, attrs[key]);
     }
@@ -420,7 +420,7 @@ var privly = {
     object.style.display = "none";
 
     // Set the source URL
-    if (privly.platform == "CHROME") { 
+    if (privly.platform == "CHROME") {
       iFrame.setAttribute("src", applicationUrl);
     }
 
@@ -481,7 +481,7 @@ var privly = {
             privly.injectLinkApplication(object, response.privlyApplicationURL, frameId);
           }
         });
-    } 
+    }
     else if (privly.platform === "FIREFOX") {
       // Firefox extension supports local code storage.
       // the local URL for injection is set in privly.injectLinkApplication
@@ -630,7 +630,7 @@ var privly = {
   resizeIframePostedMessage: function(message){
 
     "use strict";
-    
+
     //check the format of the message
     if (typeof(message.origin) !== "string" ||
         typeof(message.data) !== "string" ||
@@ -657,7 +657,7 @@ var privly = {
 
     if (privly.platform === "FIREFOX") {
       if(message.origin === "chrome://privly") {
-        valid = true;     
+        valid = true;
       }
     } else {
       var sourceURL = iframe.getAttribute("src");
@@ -814,7 +814,7 @@ var privly = {
    */
   toggleInjectionHelper: function(elements, displayStyle) {
 
-    "use strict"; 
+    "use strict";
     for(var i = 0; i < elements.length; i++) {
       var element = elements[i];
       if (element.getAttribute("data-privly-display") === "true") {
